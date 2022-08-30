@@ -1,0 +1,71 @@
+{% extends "test_app/base.html" %}
+
+{% block content %}
+{% load table_tags %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-10">
+        <h1>Dashboard</h1>
+        <br>
+        <div class="row">
+            <div class="col-sm-6 col-lg-6">
+                <div class="card border-warning mb-3">
+                    <div class="card-body text-warning">
+                        <h5 class="card-title text-body">No. of Records</h5>
+                        {% if data_entries %}
+                            <p class="card-text text-success" style="font-size: 30px;"><strong>{{ data_entries.count }} Data Record{{ data_entries.count|pluralize }}</strong></p>
+                        {% else %}
+                            <p class="card-text text-danger" style="font-size: 30px;"><strong>No Data Entries</strong></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-6">
+                <div class="card border-warning mb-3">
+                    <div class="card-body text-warning">
+                        <h5 class="card-title text-body">Average Annual Income</h5>
+                        <p class="card-text text-success" style="font-size: 30px;"><strong>{{ income }}</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+        <br>
+        {% render_table entries %}
+    </div>
+</div>
+
+{% block chart_js %}
+
+<script>
+    const labels = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+    ];
+
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45],
+        }]
+    };
+
+    const config = {
+        type: 'line',
+        data: data,
+        options: {}
+    };
+</script>
+
+{% endblock %}
+
+{% endblock %}
