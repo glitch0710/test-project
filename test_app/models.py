@@ -35,6 +35,8 @@ class UsersAreaInfo(models.Model):
     total_area = models.FloatField()
     crop_planted = models.CharField(max_length=9, choices=PLANTED, default=RICE)
     remarks = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.profile_id
+    sketch_plan = models.FileField(upload_to='documents_sp/', max_length=254)
+    map = models.FileField(upload_to='documents_map/', max_length=254)
+    google_earth = models.FileField(upload_to='documents_ge/', max_length=254)
+    profile_field = models.CharField(max_length=250)
+    soil_ph = models.IntegerField(max_length=50)
