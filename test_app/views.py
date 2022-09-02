@@ -21,11 +21,20 @@ def login_user(request):
             return redirect('login_user')
         else:
             login(request, user)
-            return redirect('user_home')
+
+            try:
+                check_if_exists = Profile.objects.get(user_id=request.user)
+            except Profile.DoesNotExist:
+                return redirect('user_info')
+
+            if check_if_exists:
+                return redirect('user_home')
+            else:
+                return redirect('user_info')
 
 
 @login_required
-def user_home(request):
+def user_info(request):
     if request.method == 'GET':
         form = ProfileForm
 
@@ -42,7 +51,9 @@ def user_home(request):
             form = ProfileForm(request.POST)
 
             if form.is_valid():
-                form.save()
+                data = form.save(commit=False)
+                data.user_id = request.user
+                data.save()
             else:
                 raise ValueError
 
@@ -50,7 +61,7 @@ def user_home(request):
             return redirect('user_home')
         except ValueError:
             messages.error(request, 'The system encountered an error. Please try again.')
-            return redirect('user_home')
+            return redirect('user_info')
 
 
 @login_required
@@ -69,17 +80,25 @@ def register_user(request):
                 user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
                 user.save()
                 login(request, user)
-                return redirect('user_home')
+                return redirect('user_info')
             except IntegrityError:
                 messages.error(request, 'That username has already been taken. Please try another one.')
                 return redirect('register_user')
 
 
 @login_required
+def user_home(request):
+    if request.method == 'GET':
+        return render(request, 'test_app/user_home.html')
+    else:
+        pass
+
+
+@login_required
 def user_dashboard(request):
     if request.method == 'GET':
         if request.user.is_superuser is not True:
-            return redirect('user_home')
+            return redirect('user_info')
         else:
             data_entries = Profile.objects.all()
             entries = ProfileTable()
