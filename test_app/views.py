@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Profile
-from .forms import ProfileForm
+from .models import Profile, UsersAreaInfo
+from .forms import ProfileForm, UserAreaForm
 from django.db import IntegrityError
 from .tables import ProfileTable
 from django.http import HttpResponse
@@ -89,7 +89,28 @@ def register_user(request):
 @login_required
 def user_home(request):
     if request.method == 'GET':
-        return render(request, 'test_app/user_home.html')
+        user = Profile.objects.get(user_id=request.user)
+        user_areas = UsersAreaInfo.objects.filter(profile_id=user)
+
+        context = {
+            'user_areas': user_areas,
+        }
+
+        return render(request, 'test_app/user_home.html', context)
+    else:
+        pass
+
+
+@login_required
+def add_entry(request):
+    if request.method == 'GET':
+        form = UserAreaForm()
+
+        context = {
+            'form': form
+        }
+
+        return render(request, 'test_app/addentry.html', context)
     else:
         pass
 

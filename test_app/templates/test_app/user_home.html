@@ -4,7 +4,15 @@
 
 <div class="row justify-content-center mt-5">
     <div class="col-md-10">
+        <h1>Add Areas</h1>
         {% include 'test_app/messages.html' %}
+        {% if user_areas %}
+            <p class="card-text text-success"><em>{{ user_areas.count }} Area{{ user_areas.count|pluralize }}</em></p>
+        {% else %}
+            <p class="card-text text-danger"><em>No Areas</em></p>
+        {% endif %}
+
+        <a type="button" class="btn btn-primary" href="{% url 'add_entry' %}">Add Entry</a>
     </div>
 </div>
 

@@ -1,0 +1,73 @@
+{% extends 'test_app/base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-11">
+        <h1>Add Area Entry</h1><br>
+        {% include 'test_app/messages.html' %}
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <label class="h6" for="id_total_area">Total Area: </label><br>
+                    {{ form.total_area }}<br>
+                    <label class="h6" for="id_crop_planted">Crop Planted: </label><br>
+                    {{ form.crop_planted }}<br>
+                    <label class="h6" for="id_remarks">Remarks: </label><br>
+                    {{ form.remarks }}<br>
+                    <label class="h6" for="id_profile_field">Profile: </label><br>
+                    {{ form.profile_field }}<br>
+                    <label class="h6" for="id_soil_ph">Soil Ph: </label><br>
+                    {{ form.soil_ph }}<br>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div class="card border-success">
+                        <h5 class="card-header bg-success mb-3 text-white">
+                            Upload files
+                        </h5>
+                        <div class="card-body">
+                            <label class="h6" for="id_sketch_plan">Sketch Plan: </label><br>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                                </div>
+                                <div class="custom-file">
+                                    {{ form.sketch_plan }}
+                                    <label class="h6 custom-file-label" for="id_sketch_plan">Sketch Plan</label>
+                                </div>
+                            </div>
+
+                            <label class="h6" for="id_map">Map: </label><br>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupFileAddon02">Upload</span>
+                                </div>
+                                <div class="custom-file">
+                                    {{ form.map }}
+                                    <label class="h6 custom-file-label" for="id_map">Map</label>
+                                </div>
+                            </div>
+
+                            <label class="h6" for="id_google_earth">Google Earth: </label><br>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupFileAddon03">Upload</span>
+                                </div>
+                                <div class="custom-file">
+                                    {{ form.google_earth }}
+                                    <label class="h6 custom-file-label" for="id_google_earth">Google Earth</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <a type="button" class="btn btn-warning" href="{% url 'user_home' %}">Cancel</a>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
