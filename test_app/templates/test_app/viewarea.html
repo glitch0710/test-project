@@ -1,0 +1,66 @@
+{% extends 'test_app/base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-10">
+        <h1>Entry Details - <em>Entry ID. {{ user_area.id }}</em></h1>
+        {% include 'test_app/messages.html' %}
+        <br>
+        <div class="card shadow border-success">
+            <div class="card-header">
+                Information
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <p class="card-text">Total Area: <strong>{{ user_area.total_area }}</strong></p>
+                        <p class="card-text">Crop Planted: <strong>{{ user_area.crop_planted }}</strong></p>
+                        <p class="card-text">Remarks: <strong>{{ user_area.remarks }}</strong></p>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <p class="card-text">Profile: <strong>{{ user_area.profile_field }}</strong></p>
+                        <p class="card-text">Soil Ph: <strong>{{ user_area.soil_ph }}</strong></p>
+                    </div>
+                </div>
+                <br>
+                <a href="{% url 'user_home' %}" class="btn btn-warning">Back</a>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#updateAreaModal" data-backdrop="static" data-keyboard="false">
+                    Update Area
+                </button>
+            </div>
+        </div>
+        <br><br><h4>Attachments</h4><hr>
+        <label class="h6">Sketch Plan: </label>
+        <a class="h6 btn-outline-success" href="/media/{{ user_area.sketch_plan }}" target="_blank">Click here to view or download</a><br>
+        <label class="h6">Map: </label>
+        <a class="h6 btn-outline-success" href="/media/{{ user_area.map }}" target="_blank">Click here to view or download</a><br>
+        <label class="h6">Google Earth: </label>
+        <a class="h6 btn-outline-success" href="/media/{{ user_area.google_earth }}" target="_blank">Click here to view or download</a><br>
+    </div>
+</div>
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade bd-example-modal-lg" id="updateAreaModal" tabindex="-1" role="dialog" aria-labelledby="updateAreaModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLongTitle">Update Area</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}

@@ -4,17 +4,16 @@
 
 <div class="row justify-content-center mt-5">
     <div class="col-md-10">
-        <h1>User Areas</h1>
-        {% include 'test_app/messages.html' %}
+        <h1>User Areas - <em>{{ profile.first_name }}</em></h1>
+
         {% if user_areas %}
             <p class="card-text text-success"><em>{{ user_areas.count }} Area{{ user_areas.count|pluralize }}</em></p>
         {% else %}
             <p class="card-text text-danger"><em>No Areas</em></p>
         {% endif %}
 
-        <a type="button" class="btn btn-primary" href="{% url 'add_entry' %}">Add Entry</a>
-        <br>
-        <br>
+        <a type="button" class="btn btn-warning" href="{% url 'user_dashboard' %}">Back</a>
+        <br><br>
         <table class="table table-hover table-stripped table-responsive-md">
             <thead class="table-success">
                 <tr>
@@ -32,7 +31,7 @@
                         <th>{{ area.total_area }}</th>
                         <th>{{ area.crop_planted }}</th>
                         <th>{{ area.remarks }}</th>
-                        <th><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_area' area.id %}">View</a>&nbsp;<a type="button" class="btn btn-outline-danger btn-sm text-danger">Delete</a></th>
+                        <th><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_area_admin' area.id %}">View</a>&nbsp;<a type="button" class="btn btn-outline-danger btn-sm text-danger">Delete</a></th>
                     </tr>
                 {% endfor %}
             </tbody>

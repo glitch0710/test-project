@@ -6,7 +6,7 @@
     <div class="col-md-11">
         <h1>Add Area Entry</h1><br>
         {% include 'test_app/messages.html' %}
-        <form action="" method="POST">
+        <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
                 <div class="col-sm-12 col-md-6">
@@ -28,37 +28,21 @@
                         </h5>
                         <div class="card-body">
                             <label class="h6" for="id_sketch_plan">Sketch Plan: </label><br>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-                                </div>
-                                <div class="custom-file">
-                                    {{ form.sketch_plan }}
-                                    <label class="h6 custom-file-label" for="id_sketch_plan">Sketch Plan</label>
-                                </div>
-                            </div>
-
+                            {{ form.sketch_plan }}<br><br>
+<!--                            <div class="input-group mb-3">-->
+<!--                                <div class="input-group-prepend">-->
+<!--                                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>-->
+<!--                                </div>-->
+<!--                                <div class="custom-file">-->
+<!--                                    {{ form.sketch_plan }}-->
+<!--                                    <label class="h6 custom-file-label" for="id_sketch_plan">Sketch Plan</label>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <label class="h6" for="id_map">Map: </label><br>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupFileAddon02">Upload</span>
-                                </div>
-                                <div class="custom-file">
-                                    {{ form.map }}
-                                    <label class="h6 custom-file-label" for="id_map">Map</label>
-                                </div>
-                            </div>
+                            {{ form.map }}<br><br>
 
                             <label class="h6" for="id_google_earth">Google Earth: </label><br>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupFileAddon03">Upload</span>
-                                </div>
-                                <div class="custom-file">
-                                    {{ form.google_earth }}
-                                    <label class="h6 custom-file-label" for="id_google_earth">Google Earth</label>
-                                </div>
-                            </div>
+                            {{ form.google_earth }}<br><br>
                         </div>
                     </div>
                     <br>

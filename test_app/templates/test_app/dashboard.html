@@ -28,49 +28,34 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12">
-                <canvas id="myChart"></canvas>
-            </div>
         </div>
         <br>
-        {% render_table entries %}
+        <table class="table table-hover table-stripped table-responsive-md">
+            <thead class="table-success">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Income Annual</th>
+                    <th scope="col" align="center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in data_entries %}
+                    <tr>
+                        <th scope="row">{{ data.id }}</th>
+                        <th>{{ data.first_name }}</th>
+                        <th>{{ data.last_name }}</th>
+                        <th>{{ data.gender }}</th>
+                        <th>{{ data.address }}</th>
+                        <th>{{ data.income_annual }}</th>
+                        <th><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_user' data.id %}">View</a>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
-
-{% block chart_js %}
-
-<script>
-    const labels = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-    ];
-
-    const data = {
-        labels: labels,
-        datasets: [{
-            label: 'My First dataset',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [0, 10, 5, 2, 20, 30, 45],
-        }]
-    };
-
-    const config = {
-        type: 'line',
-        data: data,
-        options: {}
-    };
-
-    const myChart = new Chart(
-        document.getElementById('myChart'),
-        config
-    );
-</script>
-
-{% endblock %}
-
 {% endblock %}

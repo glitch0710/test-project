@@ -50,18 +50,18 @@ class UserAreaForm(ModelForm):
                 'class': "form-control",
                 'rows': "3"
             }),
-            'sketch_plan': FileInput(attrs={
-                'class': "custom-file-input",
-                'aria-describedby': "inputGroupFileAddon01",
-            }),
-            'map': FileInput(attrs={
-                'class': "custom-file-input",
-                'aria-describedby': "inputGroupFileAddon02",
-            }),
-            'google_earth': FileInput(attrs={
-                'class': "custom-file-input",
-                'aria-describedby': "inputGroupFileAddon03",
-            }),
+            # 'sketch_plan': FileInput(attrs={
+            #     'class': "custom-file-input",
+            #     'aria-describedby': "inputGroupFileAddon01",
+            # }),
+            # 'map': FileInput(attrs={
+            #     'class': "custom-file-input",
+            #     'aria-describedby': "inputGroupFileAddon02",
+            # }),
+            # 'google_earth': FileInput(attrs={
+            #     'class': "custom-file-input",
+            #     'aria-describedby': "inputGroupFileAddon03",
+            # }),
             'profile_field': TextInput(attrs={
                 'class': "form-control",
             }),

@@ -1,3 +1,0 @@
-First Name [Required],Last Name [Required],Email Address [Required],Password [Required],Password Hash Function [UPLOAD ONLY],Org Unit Path [Required],New Primary Email [UPLOAD ONLY],Recovery Email,Home Secondary Email,Work Secondary Email,Recovery Phone [MUST BE IN THE E.164 FORMAT],Work Phone,Home Phone,Mobile Phone,Work Address,Home Address,Employee ID,Employee Type,Employee Title,Manager Email,Department,Cost Center,Building ID,Floor Name,Floor Section,Change Password at Next Sign-In,New Status [UPLOAD ONLY],New Licenses [UPLOAD ONLY],Advanced Protection Program enrollment
-SHANLEY JICA,DANIEL,s.daniel.shanleyjica@cmu.edu.ph,2022304295,,/student,,,,,,,,,,,,,,,,,,,,,,,
-MARIA CASSANDRA,RUBIO,s.rubio.mariacassandra@cmu.edu.ph,2022304291,,/student,,,,,,,,,,,,,,,,,,,,,,,
