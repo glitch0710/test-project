@@ -3,12 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Profile, UsersAreaInfo
+from .models import Profile, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode
 from .forms import ProfileForm, UserAreaForm
 from django.db import IntegrityError
 from .tables import ProfileTable
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import numpy as np
+import json
 
 
 def login_user(request):
@@ -36,10 +37,12 @@ def login_user(request):
 @login_required
 def user_info(request):
     if request.method == 'GET':
-        form = ProfileForm
+        form = ProfileForm()
+        regions = RegionCode.objects.all()
 
         context = {
             'form': form,
+            'regions': regions,
         }
 
         if request.user.is_staff and request.user.is_superuser:
@@ -53,6 +56,10 @@ def user_info(request):
             if form.is_valid():
                 data = form.save(commit=False)
                 data.user_id = request.user
+                data.region = request.POST['region']
+                data.province = request.POST['province']
+                data.muncity = request.POST['muncity']
+                data.brgy = request.POST['brgy']
                 data.save()
             else:
                 raise ValueError
@@ -174,7 +181,7 @@ def user_dashboard(request):
             return redirect('user_info')
         else:
             data_entries = Profile.objects.all()
-            # entries = ProfileTable()
+            regions = RegionCode.objects.all()
 
             raw_income = Profile.objects.all()
             list_income = []
@@ -192,11 +199,42 @@ def user_dashboard(request):
             context = {
                 'data_entries': data_entries,
                 'income': mean_income,
+                'regions': regions,
             }
 
             return render(request, 'test_app/dashboard.html', context)
     else:
-        pass
+        profile_datas = Profile.objects.all()
+
+        searched_data = request.POST.get('search')
+        region = int(request.POST.get('region'))
+        province = int(request.POST.get('province'))
+        muncity = int(request.POST.get('muncity'))
+        brgy = int(request.POST.get('brgy'))
+
+        if searched_data != '' and searched_data is not None:
+            profile_datas = profile_datas.filter(first_name__icontains=searched_data)
+
+        if region != 0:
+            profile_datas = profile_datas.filter(region=region)
+
+        if province !=0:
+            profile_datas = profile_datas.filter(province=province)
+
+        if muncity !=0:
+            profile_datas = profile_datas.filter(muncity=muncity)
+
+        if brgy !=0:
+            profile_datas = profile_datas.filter(brgy=brgy)
+
+        regions = RegionCode.objects.all()
+
+        context = {
+            'data_entries': profile_datas,
+            'regions': regions,
+        }
+
+        return render(request, 'test_app/dashboard.html', context)
 
 
 @login_required
@@ -225,5 +263,42 @@ def view_area_admin(request, pk):
         }
 
         return render(request, 'test_app/viewarea.html', context)
+    else:
+        pass
+
+
+@login_required()
+def province_filtered(request, pk):
+    provinces = ProvincialCode.objects.filter(region_code=pk)
+    return JsonResponse({"provinces":list(provinces.values())})
+
+
+@login_required()
+def muncity_filtered(request, pk):
+    muncities = MunCityCode.objects.filter(province_code=pk)
+    return JsonResponse({"muncities": list(muncities.values())})
+
+
+@login_required()
+def brgy_filtered(request, pk):
+    brgys = BrgyCode.objects.filter(muncity_code=pk)
+    return JsonResponse({"brgys": list(brgys.values())})
+
+
+@login_required()
+def search_data(request):
+    if request.method == 'POST':
+        temp_data = json.load(request)
+        data = temp_data.get('payload')
+        
+        searched_data = data['search']
+        region = data['region']
+        province = data['province']
+        muncity = data['muncity']
+        brgy = data['brgy']
+
+        profile_datas = Profile.objects.filter(first_name__contains=searched_data)
+
+        return JsonResponse({"profile_datas": list(profile_datas.values())})
     else:
         pass

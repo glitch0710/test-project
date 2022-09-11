@@ -1,14 +1,34 @@
 {% extends "test_app/base.html" %}
 
+{% block css %}
+<style>
+    #spinner-div {
+        position: fixed;
+        display: none;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 2;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 {% load table_tags %}
+
+<div id="spinner-div" class="pt-5">
+    <div class="spinner-border text-primary" role="status"></div>
+</div>
 
 <div class="row justify-content-center mt-5">
     <div class="col-md-10">
         <h1>Dashboard</h1>
         <br>
         <div class="row">
-            <div class="col-sm-6 col-lg-6">
+            <div class="col-sm-12 col-lg-12">
                 <div class="card border-warning mb-3">
                     <div class="card-body text-warning">
                         <h5 class="card-title text-body">No. of Records</h5>
@@ -20,17 +40,54 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-lg-6">
-                <div class="card border-warning mb-3">
-                    <div class="card-body text-warning">
-                        <h5 class="card-title text-body">Average Annual Income</h5>
-                        <p class="card-text text-success" style="font-size: 30px;"><strong>{{ income }}</strong></p>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="col-sm-6 col-lg-6">-->
+<!--                <div class="card border-warning mb-3">-->
+<!--                    <div class="card-body text-warning">-->
+<!--                        <h5 class="card-title text-body">Average Annual Income</h5>-->
+<!--                        <p class="card-text text-success" style="font-size: 30px;"><strong>{{ income }}</strong></p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
         <br>
-        <table class="table table-hover table-stripped table-responsive-md">
+        <form action="" id="searchForm" method="POST">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Search</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Search" aria-describedby="inputGroup-sizing-default" id="search" name="search">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+            Filters: <br>
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                    <select class="form-select form-control" name="region" id="region" onchange="populateProvince(this)" aria-label="Select Region">
+                        <option value="0" selected>Select a Region</option>
+                        {% for region in regions %}
+                            <option value="{{ region.reg_code }}">{{ region.region_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                    <select class="form-select form-control" name="province" id="province" onchange="populateMunCity(this)" aria-label="Select Province">
+                        <option value="0" selected>Select Province</option>
+                    </select>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                    <select class="form-select form-control" name="muncity" id="muncity" onchange="populateBrgy(this)" aria-label="Select City/Municipality">
+                        <option value="0" selected>Select City/Municipality</option>
+                    </select>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                    <select class="form-select form-control" name="brgy" id="brgy" aria-label="Select Barangay">
+                        <option value="0" selected>Select Barangay</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <br>
+        <table class="table table-hover table-stripped table-responsive-md" id="profile_list">
             <thead class="table-success">
                 <tr>
                     <th scope="col">ID</th>
@@ -45,17 +102,82 @@
             <tbody>
                 {% for data in data_entries %}
                     <tr>
-                        <th scope="row">{{ data.id }}</th>
-                        <th>{{ data.first_name }}</th>
-                        <th>{{ data.last_name }}</th>
-                        <th>{{ data.gender }}</th>
-                        <th>{{ data.address }}</th>
-                        <th>{{ data.income_annual }}</th>
-                        <th><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_user' data.id %}">View</a>
+                        <td scope="row">{{ data.id }}</td>
+                        <td>{{ data.first_name }}</td>
+                        <td>{{ data.last_name }}</td>
+                        <td>{{ data.gender }}</td>
+                        <td>{{ data.address }}</td>
+                        <td>{{ data.income_annual }}</td>
+                        <td><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_user' data.id %}">View</a>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+{% endblock %}
+
+{% block chart_js %}
+<script>
+    function populateProvince(region){
+        var url = "{% url 'province_filtered' 0 %}";
+        $('#province').empty();
+        $('#spinner-div').show();
+        $.ajax({
+            type: "GET",
+            url: url.replace('0', region.value),
+            success: function(opts){
+                $('#province').append("<option value='0'>Select Province</option>");
+                for (var key in opts.provinces){
+                    var temp = "<option value='" + opts.provinces[key].prov_code + "'>" + opts.provinces[key].province_name + "</option>";
+                    $('#province').append(temp);
+                }
+            },
+            complete: function () {
+                $('#spinner-div').hide();
+            }
+        });
+    }
+
+    function populateMunCity(province){
+        var url = "{% url 'muncity_filtered' 0 %}";
+        $('#muncity').empty();
+        $('#spinner-div').show();
+        $.ajax({
+            type: "GET",
+            url: url.replace('0', province.value),
+            success: function(opts){
+                $('#muncity').append("<option value='0'>Select City/Municipality</option>");
+                for (var key in opts.muncities){
+                    var temp = "<option value='" + opts.muncities[key].muncity_code + "'>" + opts.muncities[key].muncity_name + "</option>";
+                    $('#muncity').append(temp);
+                }
+            },
+            complete: function () {
+                $('#spinner-div').hide();
+            }
+        });
+    }
+
+    function populateBrgy(muncity){
+        var url = "{% url 'brgy_filtered' 0 %}";
+        $('#brgy').empty();
+        $('#spinner-div').show();
+        $.ajax({
+            type: "GET",
+            url: url.replace('0', muncity.value),
+            success: function(opts){
+                $('#brgy').append("<option value='0'>Select Barangay</option>");
+                for (var key in opts.brgys){
+                    var temp = "<option value='" + opts.brgys[key].brgy_psgc_code + "'>" + opts.brgys[key].brgy_name + "</option>";
+                    $('#brgy').append(temp);
+                }
+            },
+            complete: function () {
+                $('#spinner-div').hide();
+            }
+        });
+    }
+</script>
+
 {% endblock %}
