@@ -46,6 +46,10 @@ class UsersAreaInfo(models.Model):
     google_earth = models.FileField(upload_to='documents_ge/', max_length=254)
     profile_field = models.CharField(max_length=250)
     soil_ph = models.IntegerField()
+    region = models.CharField(max_length=200)
+    province = models.CharField(max_length=200)
+    muncity = models.CharField(max_length=200)
+    brgy = models.CharField(max_length=200)
 
 
 class RegionCode(models.Model):

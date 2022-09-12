@@ -5,7 +5,7 @@ from .models import Profile, UsersAreaInfo
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'gender','address','income_annual']
+        fields = ['first_name', 'last_name', 'gender',]
         widgets = {
             'first_name': TextInput(attrs={
                 'class': "form-control",
@@ -16,13 +16,6 @@ class ProfileForm(ModelForm):
             'gender': Select(attrs={
                 'class': "form-control"
             }),
-            'address': Textarea(attrs={
-                'class': "form-control",
-                'rows': "3"
-            }),
-            'income_annual': TextInput(attrs={
-                'class': "form-control"
-            })
         }
 
 

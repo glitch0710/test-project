@@ -18,5 +18,4 @@ urlpatterns = [
     path('loadprovince/<int:pk>', views.province_filtered, name='province_filtered'),
     path('loadmuncity/<int:pk>', views.muncity_filtered, name='muncity_filtered'),
     path('loadbrgy/<int:pk>', views.brgy_filtered, name='brgy_filtered'),
-    path('search', views.search_data, name='search_data'),
 ]

@@ -60,6 +60,13 @@ def user_info(request):
                 data.province = request.POST['province']
                 data.muncity = request.POST['muncity']
                 data.brgy = request.POST['brgy']
+                data.income_annual = 0
+
+                address = str(get_brgy(request.POST['brgy'])) + ', ' \
+                          + str(get_muncity(request.POST['muncity'])) + ', ' \
+                          + str(get_province(request.POST['province']))
+
+                data.address = address
                 data.save()
             else:
                 raise ValueError
@@ -116,9 +123,11 @@ def user_home(request):
 def add_entry(request):
     if request.method == 'GET':
         form = UserAreaForm()
+        regions = RegionCode.objects.all()
 
         context = {
-            'form': form
+            'form': form,
+            'regions': regions
         }
 
         return render(request, 'test_app/addentry.html', context)
@@ -130,6 +139,10 @@ def add_entry(request):
             if entry_form.is_valid():
                 save_entry = entry_form.save(commit=False)
                 save_entry.profile_id = profile_id
+                save_entry.region = int(request.POST.get('region'))
+                save_entry.province = int(request.POST.get('province'))
+                save_entry.muncity = int(request.POST.get('muncity'))
+                save_entry.brgy = int(request.POST.get('brgy'))
                 save_entry.save()
             else:
                 raise ValueError
@@ -218,13 +231,13 @@ def user_dashboard(request):
         if region != 0:
             profile_datas = profile_datas.filter(region=region)
 
-        if province !=0:
+        if province != 0:
             profile_datas = profile_datas.filter(province=province)
 
-        if muncity !=0:
+        if muncity != 0:
             profile_datas = profile_datas.filter(muncity=muncity)
 
-        if brgy !=0:
+        if brgy != 0:
             profile_datas = profile_datas.filter(brgy=brgy)
 
         regions = RegionCode.objects.all()
@@ -285,20 +298,25 @@ def brgy_filtered(request, pk):
     return JsonResponse({"brgys": list(brgys.values())})
 
 
-@login_required()
-def search_data(request):
-    if request.method == 'POST':
-        temp_data = json.load(request)
-        data = temp_data.get('payload')
-        
-        searched_data = data['search']
-        region = data['region']
-        province = data['province']
-        muncity = data['muncity']
-        brgy = data['brgy']
+def get_region(region_id):
+    if region_id != 0:
+        region_name = RegionCode.objects.filter(reg_code=region_id).region_name
+        return region_name
 
-        profile_datas = Profile.objects.filter(first_name__contains=searched_data)
 
-        return JsonResponse({"profile_datas": list(profile_datas.values())})
-    else:
-        pass
+def get_province(province_id):
+    if province_id != 0:
+        province_name = ProvincialCode.objects.get(prov_code=province_id).province_name
+        return province_name
+
+
+def get_muncity(muncity_id):
+    if muncity_id != 0:
+        muncity_name = MunCityCode.objects.get(muncity_code=muncity_id).muncity_name
+        return muncity_name
+
+
+def get_brgy(brgy_id):
+    if brgy_id != 0:
+        brgy_name = BrgyCode.objects.get(brgy_psgc_code=brgy_id).brgy_name
+        return brgy_name

@@ -1,6 +1,25 @@
 {% extends 'test_app/base.html' %}
 
+{% block css %}
+<style>
+    #spinner-div {
+        position: fixed;
+        display: none;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 2;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div id="spinner-div" class="pt-5">
+    <div class="spinner-border text-primary" role="status"></div>
+</div>
 
 <div class="row justify-content-center mt-5">
     <div class="col-md-11">
@@ -20,6 +39,25 @@
                     {{ form.profile_field }}<br>
                     <label class="h6" for="id_soil_ph">Soil Ph: </label><br>
                     {{ form.soil_ph }}<br>
+                    Region:
+                    <select class="form-select form-control" name="region" id="region" onchange="populateProvince(this)" aria-label="Select Region">
+                        <option value="0" selected>Select a Region</option>
+                        {% for region in regions %}
+                            <option value="{{ region.reg_code }}">{{ region.region_name }}</option>
+                        {% endfor %}
+                    </select><br>
+                    Province:
+                    <select class="form-select form-control" name="province" id="province" onchange="populateMunCity(this)" aria-label="Select Province">
+                        <option value="0" selected>Select Province</option>
+                    </select><br>
+                    City/Municipality:
+                    <select class="form-select form-control" name="muncity" id="muncity" onchange="populateBrgy(this)" aria-label="Select City/Municipality">
+                        <option value="0" selected>Select City/Municipality</option>
+                    </select><br>
+                    Barangay:
+                    <select class="form-select form-control" name="brgy" id="brgy" aria-label="Select Barangay">
+                        <option value="0" selected>Select Barangay</option>
+                    </select><br><br>
                 </div>
                 <div class="col-sm-12 col-md-6">
                     <div class="card border-success">
@@ -53,5 +91,70 @@
         </form>
     </div>
 </div>
+
+{% endblock %}
+
+{% block chart_js %}
+<script>
+    function populateProvince(region){
+        var url = "{% url 'province_filtered' 0 %}";
+        $('#province').empty();
+        $('#spinner-div').show();
+        $.ajax({
+            type: "GET",
+            url: url.replace('0', region.value),
+            success: function(opts){
+                $('#province').append("<option value='0'>Select Province</option>");
+                for (var key in opts.provinces){
+                    var temp = "<option value='" + opts.provinces[key].prov_code + "'>" + opts.provinces[key].province_name + "</option>";
+                    $('#province').append(temp);
+                }
+            },
+            complete: function () {
+                $('#spinner-div').hide();
+            }
+        });
+    }
+
+    function populateMunCity(province){
+        var url = "{% url 'muncity_filtered' 0 %}";
+        $('#muncity').empty();
+        $('#spinner-div').show();
+        $.ajax({
+            type: "GET",
+            url: url.replace('0', province.value),
+            success: function(opts){
+                $('#muncity').append("<option value='0'>Select City/Municipality</option>");
+                for (var key in opts.muncities){
+                    var temp = "<option value='" + opts.muncities[key].muncity_code + "'>" + opts.muncities[key].muncity_name + "</option>";
+                    $('#muncity').append(temp);
+                }
+            },
+            complete: function () {
+                $('#spinner-div').hide();
+            }
+        });
+    }
+
+    function populateBrgy(muncity){
+        var url = "{% url 'brgy_filtered' 0 %}";
+        $('#brgy').empty();
+        $('#spinner-div').show();
+        $.ajax({
+            type: "GET",
+            url: url.replace('0', muncity.value),
+            success: function(opts){
+                $('#brgy').append("<option value='0'>Select Barangay</option>");
+                for (var key in opts.brgys){
+                    var temp = "<option value='" + opts.brgys[key].brgy_psgc_code + "'>" + opts.brgys[key].brgy_name + "</option>";
+                    $('#brgy').append(temp);
+                }
+            },
+            complete: function () {
+                $('#spinner-div').hide();
+            }
+        });
+    }
+</script>
 
 {% endblock %}
