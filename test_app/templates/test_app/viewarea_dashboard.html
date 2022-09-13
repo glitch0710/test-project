@@ -17,8 +17,6 @@
 {% endblock %}
 
 {% block content %}
-{% load table_tags %}
-
 <div id="spinner-div" class="pt-5">
     <div class="spinner-border text-primary" role="status"></div>
 </div>
@@ -28,7 +26,7 @@
         <h1>Dashboard</h1>
         <br>
         <div class="row">
-            <div class="col-sm-12 col-lg-12">
+            <div class="col-sm-6 col-lg-6">
                 <div class="card border-warning mb-3">
                     <div class="card-body text-warning">
                         <h5 class="card-title text-body">No. of Records</h5>
@@ -40,21 +38,21 @@
                     </div>
                 </div>
             </div>
-<!--            <div class="col-sm-6 col-lg-6">-->
-<!--                <div class="card border-warning mb-3">-->
-<!--                    <div class="card-body text-warning">-->
-<!--                        <h5 class="card-title text-body">Average Annual Income</h5>-->
-<!--                        <p class="card-text text-success" style="font-size: 30px;"><strong>{{ income }}</strong></p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <div class="col-sm-6 col-lg-6">
+                <div class="card border-warning mb-3">
+                    <div class="card-body text-warning">
+                        <h5 class="card-title text-body">Productive Area</h5>
+                        <p class="card-text text-success" style="font-size: 30px;"><strong>{{ productive_area }}</strong></p>
+                    </div>
+                </div>
+            </div>
         </div>
         <br>
         <form action="" id="searchForm" method="POST">
             {% csrf_token %}
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Search Firstname</span>
+                    <span class="input-group-text" id="inputGroup-sizing-default">Search ID</span>
                 </div>
                 <input type="text" class="form-control" aria-label="Search" aria-describedby="inputGroup-sizing-default" id="search" name="search">
                 <button type="submit" class="btn btn-success">Submit</button>
@@ -91,10 +89,9 @@
             <thead class="table-success">
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Gender</th>
-                    <th scope="col">Address</th>
+                    <th scope="col">Area Applied</th>
+                    <th scope="col">Crop Planted</th>
+                    <th scope="col">Remarks</th>
                     <th scope="col" align="center">Actions</th>
                 </tr>
             </thead>
@@ -102,11 +99,10 @@
                 {% for data in data_entries %}
                     <tr>
                         <td scope="row">{{ data.id }}</td>
-                        <td>{{ data.first_name }}</td>
-                        <td>{{ data.last_name }}</td>
-                        <td>{{ data.gender }}</td>
-                        <td>{{ data.address }}</td>
-                        <td><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_user' data.id %}">View</a>
+                        <td>{{ data.total_area }}</td>
+                        <td>{{ data.crop_planted }}</td>
+                        <td>{{ data.remarks }}</td>
+                        <td><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_area_admin' data.id %}">View</a>
                     </tr>
                 {% endfor %}
             </tbody>

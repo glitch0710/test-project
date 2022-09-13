@@ -251,6 +251,80 @@ def user_dashboard(request):
 
 
 @login_required
+def viewarea_dashboard(request):
+    if request.method == 'GET':
+        data_entries = UsersAreaInfo.objects.all()
+        regions = RegionCode.objects.all()
+
+        pa = data_entries
+        list_pa = []
+
+        if not pa:
+            productive_area = 0
+        else:
+            list_pa.clear()
+            for area in pa:
+                list_pa.append(area.total_area)
+
+            np_pa = np.array([list_pa])
+            productive_area = np.sum(np_pa)
+
+        context = {
+            'data_entries': data_entries,
+            'productive_area': productive_area,
+            'regions': regions,
+        }
+
+        return render(request, 'test_app/viewarea_dashboard.html', context)
+    else:
+        profile_datas = UsersAreaInfo.objects.all()
+
+        searched_data = request.POST.get('search')
+        region = int(request.POST.get('region'))
+        province = int(request.POST.get('province'))
+        muncity = int(request.POST.get('muncity'))
+        brgy = int(request.POST.get('brgy'))
+
+        if searched_data != '' and searched_data is not None:
+            profile_datas = profile_datas.filter(id__icontains=searched_data)
+
+        if region != 0:
+            profile_datas = profile_datas.filter(region=region)
+
+        if province != 0:
+            profile_datas = profile_datas.filter(province=province)
+
+        if muncity != 0:
+            profile_datas = profile_datas.filter(muncity=muncity)
+
+        if brgy != 0:
+            profile_datas = profile_datas.filter(brgy=brgy)
+
+        regions = RegionCode.objects.all()
+
+        pa = profile_datas
+        list_pa = []
+
+        if not pa:
+            productive_area = 0
+        else:
+            list_pa.clear()
+            for area in pa:
+                list_pa.append(area.total_area)
+
+            np_pa = np.array([list_pa])
+            productive_area = np.sum(np_pa)
+
+        context = {
+            'data_entries': profile_datas,
+            'productive_area': productive_area,
+            'regions': regions,
+        }
+
+        return render(request, 'test_app/viewarea_dashboard.html', context)
+
+
+@login_required
 def view_user(request, pk):
     if request.method == 'GET':
         profile_info = get_object_or_404(Profile, id=pk)

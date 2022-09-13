@@ -35,6 +35,16 @@
     <ul class="navbar-nav ml-auto">
         {% if user.is_authenticated %}
             <li class="nav-item">
+                {% if user.is_superuser %}
+                    <a href="{% url 'user_dashboard' %}" class="nav-link text-white">View Profiles</a>
+                {% endif %}
+            </li>
+            <li class="nav-item">
+                {% if user.is_superuser %}
+                    <a href="{% url 'viewarea_dashboard' %}" class="nav-link text-white">View Areas</a>
+                {% endif %}
+            </li>
+            <li class="nav-item">
                 <a href="#" onclick="$('#signOutBtn').click()" class="nav-link text-white">Logout</a>
                 <form style='display: none;' method="POST" action="{% url 'logout_user' %}">
                     {% csrf_token %}
