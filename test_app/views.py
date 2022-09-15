@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Profile, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode
@@ -327,9 +328,46 @@ def viewarea_dashboard(request):
 @login_required(login_url='/')
 def user_list(request):
     if request.method == 'GET':
-        return render(request, 'test_app/users.html')
+        data_entries = Profile.objects.all()
+        regions = RegionCode.objects.all()
+        form = ProfileForm()
+        userform = UserCreationForm()
+
+        context = {
+            'data_entries': data_entries,
+            'form': form,
+            'regions': regions,
+            'userform': userform
+        }
+        return render(request, 'test_app/users.html', context)
     else:
-        pass
+        try:
+            data = ProfileForm(request.POST)
+
+            if data.is_valid():
+                new_user = data.save(commit=False)
+                new_user.region = int(request.POST.get('region'))
+                new_user.province = int(request.POST.get('province'))
+                new_user.muncity = int(request.POST.get('muncity'))
+                new_user.brgy = int(request.POST.get('brgy'))
+                new_user.income_annual = 0
+                new_user.user_id = request.user
+
+                address = str(get_brgy(request.POST['brgy'])) + ', ' \
+                          + str(get_muncity(request.POST['muncity'])) + ', ' \
+                          + str(get_province(request.POST['province']))
+
+                new_user.address = address
+
+                new_user.save()
+
+                messages.success(request, 'New user saved successfully')
+                return redirect('user_list')
+            else:
+                raise ValueError
+        except ValueError:
+            messages.error(request, "Error encountered upon saving new user. Please try again.")
+            return redirect('user_list')
 
 
 @login_required(login_url='/')

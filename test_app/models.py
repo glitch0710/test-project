@@ -19,7 +19,7 @@ class Profile(models.Model):
     muncity = models.CharField(max_length=200)
     brgy = models.CharField(max_length=200)
     address = models.TextField()
-    income_annual = models.FloatField()
+    income_annual = models.FloatField(default=0, blank=True, null=True)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
