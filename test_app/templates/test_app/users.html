@@ -1,0 +1,39 @@
+{% extends 'test_app/base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-10">
+        <h1>System Users</h1>
+        <hr>
+        <a type="button" class="btn btn-primary" href="#">Add New User</a>
+        <br>
+        <br>
+        <table class="table table-hover table-stripped table-responsive-md" id="profile_list">
+            <thead class="table-success">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Address</th>
+                    <th scope="col" align="center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in data_entries %}
+                    <tr>
+                        <td scope="row">{{ data.id }}</td>
+                        <td>{{ data.first_name }}</td>
+                        <td>{{ data.last_name }}</td>
+                        <td>{{ data.gender }}</td>
+                        <td>{{ data.address }}</td>
+                        <td><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="#">Update</a>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

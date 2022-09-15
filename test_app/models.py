@@ -26,6 +26,19 @@ class Profile(models.Model):
         return self.first_name
 
 
+class ProfileAttachments(models.Model):
+    profile_id = models.ForeignKey(Profile, models.CASCADE, db_column='profile_id')
+    id_picture = models.FileField(upload_to='profile_attachments/id/%Y%m%d')
+    cedula = models.FileField(upload_to='profile_attachments/cedula/%Y%m%d')
+    brgy_clearance = models.FileField(upload_to='profile_attachments/brgy_clearance/%Y%m%d')
+    tax_dec = models.FileField(upload_to='profile_attachments/tax_dec/%Y%m%d')
+    valid_id_one = models.FileField(upload_to='profile_attachments/valid_id/%Y%m%d')
+    valid_id_two = models.FileField(upload_to='profile_attachments/valid_id/%Y%m%d')
+
+    def __str__(self):
+        return self.profile_id
+
+
 class UsersAreaInfo(models.Model):
     RICE = 'Rice'
     CORN = 'Corn'

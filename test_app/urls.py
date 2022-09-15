@@ -15,6 +15,7 @@ urlpatterns = [
     path('dashboard/viewuser/<int:pk>', views.view_user, name='view_user'),
     path('dashboard/viewuserarea/<int:pk>/', views.view_area_admin, name='view_area_admin'),
     path('dashboard/area', views.viewarea_dashboard, name='viewarea_dashboard'),
+    path('dashboard/users', views.user_list, name='user_list'),
 
     path('loadprovince/<int:pk>', views.province_filtered, name='province_filtered'),
     path('loadmuncity/<int:pk>', views.muncity_filtered, name='muncity_filtered'),

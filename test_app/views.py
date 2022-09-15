@@ -34,7 +34,7 @@ def login_user(request):
                 return redirect('user_info')
 
 
-@login_required
+@login_required(login_url='/')
 def user_info(request):
     if request.method == 'GET':
         form = ProfileForm()
@@ -78,7 +78,7 @@ def user_info(request):
             return redirect('user_info')
 
 
-@login_required
+@login_required(login_url='/')
 def logout_user(request):
     if request.method == 'POST':
         logout(request)
@@ -100,7 +100,7 @@ def register_user(request):
                 return redirect('register_user')
 
 
-@login_required
+@login_required(login_url='/')
 def user_home(request):
     if request.method == 'GET':
         try:
@@ -119,7 +119,7 @@ def user_home(request):
         pass
 
 
-@login_required
+@login_required(login_url='/')
 def add_entry(request):
     if request.method == 'GET':
         form = UserAreaForm()
@@ -154,7 +154,7 @@ def add_entry(request):
             return redirect('add_entry')
 
 
-@login_required
+@login_required(login_url='/')
 def view_area(request, pk):
     if request.method == 'GET':
         profile_id = Profile.objects.get(user_id=request.user)
@@ -187,7 +187,7 @@ def view_area(request, pk):
             return redirect('view_area', user_area.id)
 
 
-@login_required
+@login_required(login_url='/')
 def user_dashboard(request):
     if request.method == 'GET':
         if request.user.is_superuser is not True:
@@ -250,7 +250,7 @@ def user_dashboard(request):
         return render(request, 'test_app/dashboard.html', context)
 
 
-@login_required
+@login_required(login_url='/')
 def viewarea_dashboard(request):
     if request.method == 'GET':
         data_entries = UsersAreaInfo.objects.all()
@@ -324,7 +324,15 @@ def viewarea_dashboard(request):
         return render(request, 'test_app/viewarea_dashboard.html', context)
 
 
-@login_required
+@login_required(login_url='/')
+def user_list(request):
+    if request.method == 'GET':
+        return render(request, 'test_app/users.html')
+    else:
+        pass
+
+
+@login_required(login_url='/')
 def view_user(request, pk):
     if request.method == 'GET':
         profile_info = get_object_or_404(Profile, id=pk)
@@ -340,7 +348,7 @@ def view_user(request, pk):
         pass
 
 
-@login_required
+@login_required(login_url='/')
 def view_area_admin(request, pk):
     if request.method == 'GET':
         user_area = get_object_or_404(UsersAreaInfo, id=pk)
@@ -354,19 +362,19 @@ def view_area_admin(request, pk):
         pass
 
 
-@login_required()
+@login_required(login_url='/')
 def province_filtered(request, pk):
     provinces = ProvincialCode.objects.filter(region_code=pk)
     return JsonResponse({"provinces":list(provinces.values())})
 
 
-@login_required()
+@login_required(login_url='/')
 def muncity_filtered(request, pk):
     muncities = MunCityCode.objects.filter(province_code=pk)
     return JsonResponse({"muncities": list(muncities.values())})
 
 
-@login_required()
+@login_required(login_url='/')
 def brgy_filtered(request, pk):
     brgys = BrgyCode.objects.filter(muncity_code=pk)
     return JsonResponse({"brgys": list(brgys.values())})

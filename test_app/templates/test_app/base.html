@@ -36,6 +36,11 @@
         {% if user.is_authenticated %}
             <li class="nav-item">
                 {% if user.is_superuser %}
+                    <a href="{% url 'user_list' %}" class="nav-link text-white">Users</a>
+                {% endif %}
+            </li>
+            <li class="nav-item">
+                {% if user.is_superuser %}
                     <a href="{% url 'user_dashboard' %}" class="nav-link text-white">View Profiles</a>
                 {% endif %}
             </li>
