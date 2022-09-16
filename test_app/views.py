@@ -345,6 +345,18 @@ def user_list(request):
             data = ProfileForm(request.POST)
 
             if data.is_valid():
+                if request.POST.get('password1') == request.POST.get('password2'):
+                    user_credentials = User.objects.create_user(
+                        username=request.POST.get('username'),
+                        email=request.POST.get('email'),
+                        password=request.POST.get('password1'),
+                    )
+
+                    user_credentials.save()
+                else:
+                    messages.error(request, 'Passwords did not match. Please try again.')
+                    return redirect('user_list')
+
                 new_user = data.save(commit=False)
                 new_user.region = int(request.POST.get('region'))
                 new_user.province = int(request.POST.get('province'))
@@ -367,6 +379,9 @@ def user_list(request):
                 raise ValueError
         except ValueError:
             messages.error(request, "Error encountered upon saving new user. Please try again.")
+            return redirect('user_list')
+        except IntegrityError:
+            messages.error(request, 'That username has already been taken. Please try another one.')
             return redirect('user_list')
 
 

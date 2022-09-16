@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-
+# Farmers
 class Profile(models.Model):
     MALE = 'M'
     FEMALE = 'F'
@@ -25,7 +25,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.first_name
 
-
+# Farmers
 class ProfileAttachments(models.Model):
     profile_id = models.ForeignKey(Profile, models.CASCADE, db_column='profile_id')
     id_picture = models.FileField(upload_to='profile_attachments/id/%Y%m%d')

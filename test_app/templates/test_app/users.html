@@ -24,6 +24,7 @@
 <div class="row justify-content-center mt-5">
     <div class="col-md-10">
         <h1>System Users</h1>
+        {% include 'test_app/messages.html' %}
         <hr>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewUserModal" data-backdrop="static" data-keyboard="false">
             Add New User
@@ -94,7 +95,23 @@
                         <option value="0" selected>Select Barangay</option>
                     </select>
                     <hr>
-                    {{ userform.as_p }}
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" class="form-control" id="username" aria-describedby="usernameHelp">
+                        <small id="usernameHelp" class="form-text text-muted">Your username must be unique. We'll let you know if someone has taken it already.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp">
+                    </div>
+                    <div class="form-group">
+                        <label for="password1">Password</label>
+                        <input type="password" name="password1" class="form-control" id="password1">
+                    </div>
+                    <div class="form-group">
+                        <label for="password2">Confirm Password</label>
+                        <input type="password" name="password2" class="form-control" id="password2">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
