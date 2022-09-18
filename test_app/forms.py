@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput, Select, Textarea, NumberInput, FileInput
-from .models import Profile, UsersAreaInfo
+from .models import Profile, UsersAreaInfo, Farmer, ProfileAttachments
 
 
 class ProfileForm(ModelForm):
@@ -18,11 +18,44 @@ class ProfileForm(ModelForm):
             }),
         }
 
+class FarmerForm(ModelForm):
+    class Meta:
+        model = Farmer
+        fields = ['first_name', 'last_name', 'middle_name','gender',]
+        widgets = {
+            'first_name': TextInput(attrs={
+                'class': "form-control",
+            }),
+            'last_name': TextInput(attrs={
+                'class': "form-control"
+            }),
+            'middle_name': TextInput(attrs={
+                'class': "form-control"
+            }),
+            'gender': Select(attrs={
+                'class': "form-control"
+            }),
+        }
+
+
+class FarmerAttachmentsForm(ModelForm):
+    class Meta:
+        model = ProfileAttachments
+        fields = [
+            'id_picture',
+            'cedula',
+            'brgy_clearance',
+            'tax_dec',
+            'valid_id_one',
+            'valid_id_two'
+        ]
+
 
 class UserAreaForm(ModelForm):
     class Meta:
         model = UsersAreaInfo
         fields = [
+            'farmer_id',
             'total_area',
             'crop_planted',
             'remarks',
@@ -33,6 +66,9 @@ class UserAreaForm(ModelForm):
             'soil_ph',]
 
         widgets = {
+            'farmer_id': Select(attrs={
+                'class': "form-control"
+            }),
             'total_area': TextInput(attrs={
                 'class': "form-control"
             }),

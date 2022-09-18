@@ -41,12 +41,17 @@
             </li>
             <li class="nav-item">
                 {% if user.is_superuser %}
-                    <a href="{% url 'user_dashboard' %}" class="nav-link text-white">View Profiles</a>
+                    <a href="{% url 'user_dashboard' %}" class="nav-link text-white">View Farmers</a>
                 {% endif %}
             </li>
             <li class="nav-item">
                 {% if user.is_superuser %}
                     <a href="{% url 'viewarea_dashboard' %}" class="nav-link text-white">View Areas</a>
+                {% endif %}
+            </li>
+            <li class="nav-item">
+                {% if not user.is_superuser %}
+                    <a href="{% url 'add_farmer' %}" class="nav-link text-white">Add Farmer</a>
                 {% endif %}
             </li>
             <li class="nav-item">

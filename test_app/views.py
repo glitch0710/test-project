@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Profile, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode
-from .forms import ProfileForm, UserAreaForm
+from .models import Profile, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode, Farmer
+from .forms import ProfileForm, UserAreaForm, FarmerForm, FarmerAttachmentsForm
 from django.db import IntegrityError
 from .tables import ProfileTable
 from django.http import HttpResponse, JsonResponse
@@ -24,32 +24,38 @@ def login_user(request):
         else:
             login(request, user)
 
-            try:
-                check_if_exists = Profile.objects.get(user_id=request.user)
-            except Profile.DoesNotExist:
-                return redirect('user_info')
-
-            if check_if_exists:
-                return redirect('user_home')
+            if request.user.is_staff and request.user.is_superuser:
+                return redirect('user_dashboard')
             else:
-                return redirect('user_info')
+                return redirect('user_home')
+
+            # try:
+            #     check_if_exists = Profile.objects.get(user_id=request.user)
+            # except Profile.DoesNotExist:
+            #     return redirect('user_info')
+            #
+            # if check_if_exists:
+            #     return redirect('user_home')
+            # else:
+            #     return redirect('user_info')
 
 
 @login_required(login_url='/')
 def user_info(request):
     if request.method == 'GET':
-        form = ProfileForm()
+        # form = ProfileForm()
         regions = RegionCode.objects.all()
+        farmer_list = Farmer.objects.all()
 
         context = {
-            'form': form,
+            'data_entries': farmer_list,
             'regions': regions,
         }
 
         if request.user.is_staff and request.user.is_superuser:
             return redirect('user_dashboard')
         else:
-            return render(request, 'test_app/dataentry.html', context)
+            return render(request, 'test_app/staffdashboard.html', context)
     else:
         try:
             form = ProfileForm(request.POST)
@@ -77,6 +83,51 @@ def user_info(request):
         except ValueError:
             messages.error(request, 'The system encountered an error. Please try again.')
             return redirect('user_info')
+
+
+@login_required(login_url='/')
+def add_farmer(request):
+    if request.method == 'GET':
+        form = FarmerForm()
+        form_attachments = FarmerAttachmentsForm()
+        regions = RegionCode.objects.all()
+
+        context = {
+            'form': form,
+            'form_attachments': form_attachments,
+            'regions': regions,
+        }
+        return render(request, 'test_app/newfarmer.html', context)
+    else:
+        # try:
+            primary_form = FarmerForm(request.POST)
+            attachment_form = FarmerAttachmentsForm(request.POST, request.FILES)
+
+            # if primary_form.is_valid() and attachment_form.is_valid():
+            data = primary_form.save(commit=False)
+            data.region = request.POST['region']
+            data.province = request.POST['province']
+            data.muncity = request.POST['muncity']
+            data.brgy = request.POST['brgy']
+
+            address = str(get_brgy(request.POST['brgy'])) + ', ' \
+                      + str(get_muncity(request.POST['muncity'])) + ', ' \
+                      + str(get_province(request.POST['province']))
+
+            data.address = address
+            data.save()
+
+            attchmnts = attachment_form.save(commit=False)
+            farmer = Farmer.objects.get(id=data.id)
+            attchmnts.farmer_id = farmer
+            attchmnts.save()
+
+            messages.success(request, 'Farmer profile saved successfully.')
+            return redirect('user_info')
+        # except ValueError:
+        #     messages.error(request, 'Data entry encountered an error. Please try again.')
+        #     return redirect('add_farmer')
+
 
 
 @login_required(login_url='/')
@@ -135,11 +186,9 @@ def add_entry(request):
     else:
         try:
             entry_form = UserAreaForm(request.POST, request.FILES)
-            profile_id = Profile.objects.get(user_id=request.user)
 
             if entry_form.is_valid():
                 save_entry = entry_form.save(commit=False)
-                save_entry.profile_id = profile_id
                 save_entry.region = int(request.POST.get('region'))
                 save_entry.province = int(request.POST.get('province'))
                 save_entry.muncity = int(request.POST.get('muncity'))
@@ -194,7 +243,7 @@ def user_dashboard(request):
         if request.user.is_superuser is not True:
             return redirect('user_info')
         else:
-            data_entries = Profile.objects.all()
+            data_entries = Farmer.objects.all()
             regions = RegionCode.objects.all()
 
             raw_income = Profile.objects.all()
@@ -218,7 +267,7 @@ def user_dashboard(request):
 
             return render(request, 'test_app/dashboard.html', context)
     else:
-        profile_datas = Profile.objects.all()
+        profile_datas = Farmer.objects.all()
 
         searched_data = request.POST.get('search')
         region = int(request.POST.get('region'))
@@ -388,8 +437,8 @@ def user_list(request):
 @login_required(login_url='/')
 def view_user(request, pk):
     if request.method == 'GET':
-        profile_info = get_object_or_404(Profile, id=pk)
-        user_areas = UsersAreaInfo.objects.filter(profile_id=pk)
+        profile_info = get_object_or_404(Farmer, id=pk)
+        user_areas = UsersAreaInfo.objects.filter(farmer_id=pk)
 
         context = {
             'user_areas': user_areas,
