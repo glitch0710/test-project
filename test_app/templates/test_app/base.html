@@ -18,7 +18,7 @@
 
 <nav class="navbar navbar-expand-md navbar-light bg-success">
 <div class="container">
-    <a class="navbar-brand" href="{% url 'login_user' %}">
+    {% if user.is_superuser %}<a class="navbar-brand" href="{% url 'user_dashboard' %}">{% else %}<a class="navbar-brand" href="{% url 'user_info' %}">{% endif %}
         <span class="text-white">Farmers Registry and Productive Land Inventory System</span>
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,11 @@
             <li class="nav-item">
                 {% if not user.is_superuser %}
                     <a href="{% url 'add_farmer' %}" class="nav-link text-white">Add Farmer</a>
+                {% endif %}
+            </li>
+            <li class="nav-item">
+                {% if not user.is_superuser %}
+                    <a href="{% url 'add_entry' %}" class="nav-link text-white">Add Farmer Area</a>
                 {% endif %}
             </li>
             <li class="nav-item">

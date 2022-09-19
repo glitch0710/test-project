@@ -28,7 +28,7 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
-                <div class="col-sm-12 col-md-6">
+                <div class="col-sm-12 col-md-7">
                     <label class="h6" for="id_farmer_id">Select Farmer: </label><br>
                     {{ form.farmer_id }}<br>
                     <label class="h6" for="id_total_area">Area Applied: </label><br>
@@ -61,7 +61,7 @@
                         <option value="0" selected>Select Barangay</option>
                     </select><br><br>
                 </div>
-                <div class="col-sm-12 col-md-6">
+                <div class="col-sm-12 col-md-5">
                     <div class="card border-success">
                         <h5 class="card-header bg-success mb-3 text-white">
                             Upload files

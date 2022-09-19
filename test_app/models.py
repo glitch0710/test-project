@@ -77,6 +77,7 @@ class UsersAreaInfo(models.Model):
     sketch_plan = models.FileField(upload_to='documents_sp/', max_length=254, blank=True)
     map = models.FileField(upload_to='documents_map/', max_length=254, blank=True)
     google_earth = models.FileField(upload_to='documents_ge/', max_length=254, blank=True)
+    area_coordinates = models.FileField(upload_to='documents_coordinates/', max_length=254, blank=True)
     profile_field = models.CharField(max_length=250)
     soil_ph = models.IntegerField()
     region = models.CharField(max_length=200)

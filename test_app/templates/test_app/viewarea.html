@@ -21,13 +21,14 @@
                     <div class="col-sm-12 col-md-6">
                         <p class="card-text">Profile: <strong>{{ user_area.profile_field }}</strong></p>
                         <p class="card-text">Soil Ph: <strong>{{ user_area.soil_ph }}</strong></p>
+                        <p class="card-text">Farm Location: <strong>{{ farm_location }}</strong></p>
                     </div>
                 </div>
                 <br>
                 {% if user.is_superuser %}
                     <a href="{% url 'user_dashboard' %}" class="btn btn-warning">Back</a>
                 {% else %}
-                    <a href="{% url 'user_home' %}" class="btn btn-warning">Back</a>
+                    <a href="{% url 'user_info' %}" class="btn btn-warning">Back</a>
                 {% endif %}
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#updateAreaModal" data-backdrop="static" data-keyboard="false">
                     Update Area

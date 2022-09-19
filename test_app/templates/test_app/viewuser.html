@@ -31,7 +31,11 @@
                         <th>{{ area.total_area }}</th>
                         <th>{{ area.crop_planted }}</th>
                         <th>{{ area.remarks }}</th>
-                        <th><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_area_admin' area.id %}">View</a>&nbsp;<a type="button" class="btn btn-outline-danger btn-sm text-danger">Delete</a></th>
+                        {% if user.is_superuser %}
+                            <th><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_area_admin' area.id %}">View</a>&nbsp;<a type="button" class="btn btn-outline-danger btn-sm text-danger">Delete</a></th>
+                        {% else %}
+                            <th><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_area' area.id %}">View</a>&nbsp;<a type="button" class="btn btn-outline-danger btn-sm text-danger">Delete</a></th>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>

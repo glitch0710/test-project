@@ -207,13 +207,17 @@ def add_entry(request):
 @login_required(login_url='/')
 def view_area(request, pk):
     if request.method == 'GET':
-        profile_id = Profile.objects.get(user_id=request.user)
-        user_area = get_object_or_404(UsersAreaInfo, id=pk, profile_id=profile_id)
+        user_area = get_object_or_404(UsersAreaInfo, id=pk)
         form = UserAreaForm(instance=user_area)
 
+        farm_location = str(get_brgy(user_area.brgy)) + ', ' \
+                      + str(get_muncity(user_area.muncity)) + ', ' \
+                      + str(get_province(user_area.province))
+        print(farm_location)
         context = {
             'user_area': user_area,
-            'form': form
+            'farm_location': farm_location,
+            'form': form,
         }
 
         return render(request, 'test_app/viewarea.html', context)
