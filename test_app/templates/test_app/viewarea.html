@@ -37,11 +37,32 @@
         </div>
         <br><br><h4>Attachments</h4><hr>
         <label class="h6">Sketch Plan: </label>
-        <a class="h6 btn-outline-success" href="/media/{{ user_area.sketch_plan }}" target="_blank">Click here to view or download</a><br>
+        {% if user_area.sketch_plan %}
+            <a class="h6 btn-outline-success" href="/media/{{ user_area.sketch_plan }}" target="_blank">Click here to view or download</a><br>
+        {% else %}
+            <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
+        {% endif %}
+
         <label class="h6">Map: </label>
-        <a class="h6 btn-outline-success" href="/media/{{ user_area.map }}" target="_blank">Click here to view or download</a><br>
+        {% if user_area.map %}
+            <a class="h6 btn-outline-success" href="/media/{{ user_area.map }}" target="_blank">Click here to view or download</a><br>
+        {% else %}
+            <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
+        {% endif %}
+
         <label class="h6">Google Earth: </label>
-        <a class="h6 btn-outline-success" href="/media/{{ user_area.google_earth }}" target="_blank">Click here to view or download</a><br>
+        {% if user_area.google_earth %}
+            <a class="h6 btn-outline-success" href="/media/{{ user_area.google_earth }}" target="_blank">Click here to view or download</a><br>
+        {% else %}
+            <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
+        {% endif %}
+
+        <label class="h6">Area Coordinates: </label>
+        {% if user_area.area_coordinates %}
+            <a class="h6 btn-outline-success" href="/media/{{ user_area.area_coordinates }}" target="_blank">Click here to view or download</a><br>
+        {% else %}
+            <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
+        {% endif %}
     </div>
 </div>
 <form action="" method="POST" enctype="multipart/form-data">

@@ -75,6 +75,13 @@
                 </div>
                 <div class="modal-body">
                     {{ form.as_p }}
+                    Group:
+                    <select class="form-select form-control" name="usergroup" id="usergroup" aria-label="Select Group">
+                        <option value="0" selected>Select a group</option>
+                        {% for group in groups %}
+                            <option value="{{ group.id }}">{{ group.name }}</option>
+                        {% endfor %}
+                    </select><br>
                     Region:
                     <select class="form-select form-control" name="region" id="region" onchange="populateProvince(this)" aria-label="Select Region">
                         <option value="0" selected>Select a Region</option>

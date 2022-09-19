@@ -62,6 +62,7 @@ class UserAreaForm(ModelForm):
             'sketch_plan',
             'map',
             'google_earth',
+            'area_coordinates',
             'profile_field',
             'soil_ph',]
 

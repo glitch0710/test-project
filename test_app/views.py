@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -99,35 +99,37 @@ def add_farmer(request):
         }
         return render(request, 'test_app/newfarmer.html', context)
     else:
-        # try:
+        try:
             primary_form = FarmerForm(request.POST)
             attachment_form = FarmerAttachmentsForm(request.POST, request.FILES)
 
-            # if primary_form.is_valid() and attachment_form.is_valid():
-            data = primary_form.save(commit=False)
-            data.region = request.POST['region']
-            data.province = request.POST['province']
-            data.muncity = request.POST['muncity']
-            data.brgy = request.POST['brgy']
+            if primary_form.is_valid() and attachment_form.is_valid():
+                data = primary_form.save(commit=False)
+                data.region = request.POST['region']
+                data.province = request.POST['province']
+                data.muncity = request.POST['muncity']
+                data.brgy = request.POST['brgy']
 
-            address = str(get_brgy(request.POST['brgy'])) + ', ' \
-                      + str(get_muncity(request.POST['muncity'])) + ', ' \
-                      + str(get_province(request.POST['province']))
+                address = str(get_brgy(request.POST['brgy'])) + ', ' \
+                          + str(get_muncity(request.POST['muncity'])) + ', ' \
+                          + str(get_province(request.POST['province']))
 
-            data.address = address
-            data.save()
+                data.address = address
+                data.save()
 
-            attchmnts = attachment_form.save(commit=False)
-            farmer = Farmer.objects.get(id=data.id)
-            attchmnts.farmer_id = farmer
-            attchmnts.save()
+                attchmnts = attachment_form.save(commit=False)
+                farmer = Farmer.objects.get(id=data.id)
+                attchmnts.farmer_id = farmer
+                attchmnts.save()
 
-            messages.success(request, 'Farmer profile saved successfully.')
-            return redirect('user_info')
-        # except ValueError:
-        #     messages.error(request, 'Data entry encountered an error. Please try again.')
-        #     return redirect('add_farmer')
-
+                messages.success(request, 'Farmer profile saved successfully.')
+                return redirect('user_info')
+            else:
+                messages.error(request, 'Form did not validate, please fill-up the form properly.')
+                return redirect('add_farmer')
+        except ValueError:
+            messages.error(request, 'Data entry encountered an error. Please try again.')
+            return redirect('add_farmer')
 
 
 @login_required(login_url='/')
@@ -213,7 +215,7 @@ def view_area(request, pk):
         farm_location = str(get_brgy(user_area.brgy)) + ', ' \
                       + str(get_muncity(user_area.muncity)) + ', ' \
                       + str(get_province(user_area.province))
-        print(farm_location)
+
         context = {
             'user_area': user_area,
             'farm_location': farm_location,
@@ -223,14 +225,11 @@ def view_area(request, pk):
         return render(request, 'test_app/viewarea.html', context)
     else:
         try:
-            profile_id = Profile.objects.get(user_id=request.user)
-            user_area = get_object_or_404(UsersAreaInfo, id=pk, profile_id=profile_id)
+            user_area = get_object_or_404(UsersAreaInfo, id=pk)
             entry_form = UserAreaForm(request.POST, request.FILES, instance=user_area)
 
             if entry_form.is_valid():
-                save_entry = entry_form.save(commit=False)
-                save_entry.profile_id = profile_id
-                save_entry.save()
+                entry_form.save()
             else:
                 raise ValueError
 
@@ -383,6 +382,7 @@ def user_list(request):
     if request.method == 'GET':
         data_entries = Profile.objects.all()
         regions = RegionCode.objects.all()
+        groups = Group.objects.all()
         form = ProfileForm()
         userform = UserCreationForm()
 
@@ -390,7 +390,8 @@ def user_list(request):
             'data_entries': data_entries,
             'form': form,
             'regions': regions,
-            'userform': userform
+            'userform': userform,
+            'groups': groups,
         }
         return render(request, 'test_app/users.html', context)
     else:
@@ -426,6 +427,9 @@ def user_list(request):
 
                 new_user.save()
 
+                user_group = Group.objects.get(id=request.POST['usergroup'])
+                user_group.user_set.add(user_credentials)
+
                 messages.success(request, 'New user saved successfully')
                 return redirect('user_list')
             else:
@@ -459,8 +463,13 @@ def view_area_admin(request, pk):
     if request.method == 'GET':
         user_area = get_object_or_404(UsersAreaInfo, id=pk)
 
+        farm_location = str(get_brgy(user_area.brgy)) + ', ' \
+                        + str(get_muncity(user_area.muncity)) + ', ' \
+                        + str(get_province(user_area.province))
+
         context = {
-            'user_area': user_area
+            'user_area': user_area,
+            'farm_location': farm_location,
         }
 
         return render(request, 'test_app/viewarea.html', context)
