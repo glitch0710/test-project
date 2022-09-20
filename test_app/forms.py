@@ -51,6 +51,51 @@ class FarmerAttachmentsForm(ModelForm):
         ]
 
 
+class UserAreaTechnicalForm(ModelForm):
+    class Meta:
+        model = UsersAreaInfo
+        fields = [
+            'farmer_id',
+            'total_area',
+            'crop_planted',
+            'remarks',
+            'area_coordinates',
+            'profile_field',
+            'soil_ph',
+        ]
+
+        widgets = {
+            'farmer_id': Select(attrs={
+                'class': "form-control"
+            }),
+            'total_area': TextInput(attrs={
+                'class': "form-control"
+            }),
+            'crop_planted': Select(attrs={
+                'class': "form-control"
+            }),
+            'remarks': Textarea(attrs={
+                'class': "form-control",
+                'rows': "3"
+            }),
+            'profile_field': TextInput(attrs={
+                'class': "form-control",
+            }),
+            'soil_ph': NumberInput(attrs={
+                'class': "form-control",
+            }),
+        }
+
+
+class UserAreaEngineerForm(ModelForm):
+    class Meta:
+        model = UsersAreaInfo
+        fields = [
+            'sketch_plan',
+            'map',
+            'google_earth',
+        ]
+
 class UserAreaForm(ModelForm):
     class Meta:
         model = UsersAreaInfo

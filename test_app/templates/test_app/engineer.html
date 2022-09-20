@@ -1,0 +1,54 @@
+{% extends 'test_app/base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-10">
+        <h1>Area List</h1>
+        {% include 'test_app/messages.html' %}
+        <hr>
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+                <div class="card border-warning mb-3">
+                    <div class="card-body text-warning">
+                        <h5 class="card-title text-body">No. of Records</h5>
+                        {% if user_areas %}
+                            <p class="card-text text-success" style="font-size: 30px;"><strong>{{ user_areas.count }} Data Record{{ user_areas.count|pluralize }}</strong></p>
+                        {% else %}
+                            <p class="card-text text-danger" style="font-size: 30px;"><strong>No Data Entries</strong></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+        <table class="table table-hover table-stripped table-responsive-md">
+            <thead class="table-success">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Area Applied</th>
+                    <th scope="col">Crop Planted</th>
+                    <th scope="col">Remarks</th>
+                    <th scope="col" align="center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for area in user_areas %}
+                    <tr>
+                        <td scope="row">{{ area.id }}</td>
+                        <td>{{ area.farmer_id.first_name }}</td>
+                        <td>{{ area.farmer_id.last_name }}</td>
+                        <td>{{ area.total_area }}</td>
+                        <td>{{ area.crop_planted }}</td>
+                        <td>{{ area.remarks }}</td>
+                        <td><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'engineer_view_area' area.id %}">View</a>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

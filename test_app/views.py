@@ -5,7 +5,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Profile, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode, Farmer
-from .forms import ProfileForm, UserAreaForm, FarmerForm, FarmerAttachmentsForm
+from .forms import ProfileForm, UserAreaForm, FarmerForm, FarmerAttachmentsForm, \
+    UserAreaEngineerForm, UserAreaTechnicalForm
 from django.db import IntegrityError
 from .tables import ProfileTable
 from django.http import HttpResponse, JsonResponse
@@ -27,7 +28,10 @@ def login_user(request):
             if request.user.is_staff and request.user.is_superuser:
                 return redirect('user_dashboard')
             else:
-                return redirect('user_home')
+                if user.groups.all()[0].id == 1:
+                    return redirect('user_home')
+                elif user.groups.all()[0].id == 2:
+                    return redirect('user_engineer')
 
             # try:
             #     check_if_exists = Profile.objects.get(user_id=request.user)
@@ -210,7 +214,8 @@ def add_entry(request):
 def view_area(request, pk):
     if request.method == 'GET':
         user_area = get_object_or_404(UsersAreaInfo, id=pk)
-        form = UserAreaForm(instance=user_area)
+        form = UserAreaTechnicalForm(instance=user_area)
+        user_group = request.user.groups.all()[0].id
 
         farm_location = str(get_brgy(user_area.brgy)) + ', ' \
                       + str(get_muncity(user_area.muncity)) + ', ' \
@@ -220,6 +225,7 @@ def view_area(request, pk):
             'user_area': user_area,
             'farm_location': farm_location,
             'form': form,
+            'user_group': user_group,
         }
 
         return render(request, 'test_app/viewarea.html', context)
@@ -473,6 +479,54 @@ def view_area_admin(request, pk):
         }
 
         return render(request, 'test_app/viewarea.html', context)
+    else:
+        pass
+
+
+@login_required(login_url='/')
+def engineer_view_area(request, pk):
+    if request.method == 'GET':
+        user_area = get_object_or_404(UsersAreaInfo, id=pk)
+        form = UserAreaEngineerForm(instance=user_area)
+
+        farm_location = str(get_brgy(user_area.brgy)) + ', ' \
+                        + str(get_muncity(user_area.muncity)) + ', ' \
+                        + str(get_province(user_area.province))
+
+        context = {
+            'user_area': user_area,
+            'farm_location': farm_location,
+            'form': form,
+        }
+
+        return render(request, 'test_app/engineerviewarea.html', context)
+    else:
+        try:
+            user_area = get_object_or_404(UsersAreaInfo, id=pk)
+            engr_update = UserAreaEngineerForm(request.POST, request.FILES, instance=user_area)
+
+            if engr_update.is_valid():
+                engr_update.save()
+
+                messages.success(request, 'Update saved successfully.')
+                return redirect('engineer_view_area', pk)
+            else:
+                messages.error(request, 'Record updating encountered an error. Please try again.')
+                return redirect('engineer_view_area', pk)
+        except ValueError:
+            messages.error(request, 'Record updating encountered an error. Please try again.')
+            return redirect('engineer_view_area', pk)
+
+
+@login_required(login_url='/')
+def user_engineer(request):
+    if request.method == 'GET':
+        user_areas = UsersAreaInfo.objects.all()
+
+        context = {
+            'user_areas': user_areas,
+        }
+        return render(request, 'test_app/engineer.html', context)
     else:
         pass
 

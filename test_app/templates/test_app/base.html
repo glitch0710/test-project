@@ -50,12 +50,12 @@
                 {% endif %}
             </li>
             <li class="nav-item">
-                {% if not user.is_superuser %}
+                {% if user.groups.all.0.id == 1 %}
                     <a href="{% url 'add_farmer' %}" class="nav-link text-white">Add Farmer</a>
                 {% endif %}
             </li>
             <li class="nav-item">
-                {% if not user.is_superuser %}
+                {% if user.groups.all.0.id == 1 %}
                     <a href="{% url 'add_entry' %}" class="nav-link text-white">Add Farmer Area</a>
                 {% endif %}
             </li>

@@ -6,7 +6,7 @@ urlpatterns = [
     path('', views.login_user, name='login_user'),
     path('register/', views.register_user, name='register_user'),
     path('logout/', views.logout_user, name='logout_user'),
-    path('home/', views.user_home, name='user_home'),
+    path('verify/', views.user_home, name='user_home'),
 
     # Staff
     path('info/', views.user_info, name='user_info'),
@@ -21,6 +21,10 @@ urlpatterns = [
     path('dashboard/viewuserarea/<int:pk>/', views.view_area_admin, name='view_area_admin'),
     path('dashboard/area', views.viewarea_dashboard, name='viewarea_dashboard'),
     path('dashboard/users', views.user_list, name='user_list'),
+
+    # Engineer
+    path('home/', views.user_engineer, name='user_engineer'),
+    path('home/viewarea/<int:pk>', views.engineer_view_area, name='engineer_view_area'),
 
     # Locations
     path('loadprovince/<int:pk>', views.province_filtered, name='province_filtered'),
