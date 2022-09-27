@@ -33,7 +33,7 @@ class Farmer(models.Model):
         (MALE, 'Male'),
         (FEMALE, 'Female'),
     ]
-
+    assigned_id = models.CharField(max_length=20, blank=True, null=True)
     first_name = models.CharField(max_length=200, blank=False)
     last_name = models.CharField(max_length=200, blank=False)
     middle_name = models.CharField(max_length=200, blank=False)
@@ -44,9 +44,28 @@ class Farmer(models.Model):
     brgy = models.CharField(max_length=200)
     address = models.TextField(blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    contact_no = models.CharField(max_length=20, blank=True, null=True)
+    tin = models.CharField(max_length=20, blank=True, null=True)
+    philhealth = models.CharField(max_length=20, blank=True, null=True)
+    sss = models.CharField(max_length=20, blank=True, null=True)
+    pagibig = models.CharField(max_length=20, blank=True, null=True)
+    civil_status = models.CharField(max_length=20, blank=True, null=True)
+    nationality = models.CharField(max_length=50, blank=True, null=True)
+    birthdate = models.DateField(default=None)
+    spouse = models.CharField(max_length=250, blank=True, null=True)
 
     def __str__(self):
         return self.first_name
+
+
+class FarmerDependents(models.Model):
+    farmer = models.ForeignKey(Farmer, models.CASCADE, db_column='farmer')
+    dependent_name = models.CharField(max_length=250, blank=False)
+    age = models.IntegerField()
+
+    def __str__(self):
+        return self.farmer
+
 
 # Farmers
 class ProfileAttachments(models.Model):
@@ -84,6 +103,22 @@ class UsersAreaInfo(models.Model):
     province = models.CharField(max_length=200)
     muncity = models.CharField(max_length=200)
     brgy = models.CharField(max_length=200)
+
+
+class AreaCrop(models.Model):
+    RICE = 'Rice'
+    CORN = 'Corn'
+    SUGARCANE = 'Sugarcane'
+
+    PLANTED = [
+        (RICE, 'Rice'),
+        (CORN, 'Corn'),
+        (SUGARCANE, 'Sugarcane'),
+    ]
+
+    crop_planted = models.CharField(max_length=9, choices=PLANTED, default=RICE)
+    status = models.CharField(max_length=100, blank=True, null=True)
+    remarks = models.CharField(max_length=100, blank=True, null=True)
 
 
 class RegionCode(models.Model):
