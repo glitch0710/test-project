@@ -33,10 +33,10 @@
                     {{ form.farmer_id }}<br>
                     <label class="h6" for="id_total_area">Area Applied: </label><br>
                     {{ form.total_area }}<br>
-                    <label class="h6" for="id_crop_planted">Crop Planted: </label><br>
-                    {{ form.crop_planted }}<br>
-                    <label class="h6" for="id_remarks">Remarks: </label><br>
-                    {{ form.remarks }}<br>
+<!--                    <label class="h6" for="id_crop_planted">Crop Planted: </label><br>-->
+<!--                    {{ form.crop_planted }}<br>-->
+<!--                    <label class="h6" for="id_remarks">Remarks: </label><br>-->
+<!--                    {{ form.remarks }}<br>-->
                     <label class="h6" for="id_profile_field">Profile: </label><br>
                     {{ form.profile_field }}<br>
                     <label class="h6" for="id_soil_ph">Soil Ph: </label><br>
@@ -62,6 +62,17 @@
                     </select><br><br>
                 </div>
                 <div class="col-sm-12 col-md-5">
+                    <div class="card border-success">
+                        <h5 class="card-header bg-success mb-3 text-white">
+                            Crops
+                        </h5>
+                        <div class="card-body">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addCropModal" data-backdrop="static" data-keyboard="false">
+                                Add Crop
+                            </button>
+                        </div>
+                    </div>
+                    <br>
                     <div class="card border-success">
                         <h5 class="card-header bg-success mb-3 text-white">
                             Upload files
@@ -96,10 +107,71 @@
     </div>
 </div>
 
+<form action="#">
+    {% csrf_token %}
+    <div class="modal fade bd-example-modal-lg" id="addCropModal" tabindex="-1" role="dialog" aria-labelledby="addCropModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCropModalLongTitle">Add crop to area</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label class="h6" for="id_crop_planted">Crop: </label><br>
+                    {{ form_crop.crop_planted }}<br>
+                    <label class="h6" for="id_status">Status: </label><br>
+                    {{ form_crop.status }}<br>
+                    <label class="h6" for="id_remarks">Remarks: </label><br>
+                    {{ form_crop.remarks }}<br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="add_crop" class="btn btn-success" onclick="addCrop()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 {% endblock %}
 
 {% block chart_js %}
 <script>
+    function addCrop(){
+        $.ajax({
+            url: "{% url 'add_crop' %}",
+            type: "POST",
+            data: {
+                "crop_planted": $("#id_crop_planted").val(),
+                "status": $("#id_status").val(),
+                "remarks": $("#id_remarks").val(),
+                "area": 1,
+                "csrfmiddlewaretoken": "{{ csrf_token }}"
+            },
+            dataType: "json",
+            before: function () {
+
+            },
+            success: function (response) {
+                console.log(response.crops.crop_planted)
+            },
+            complete: function () {
+                $('#spinner-div').hide();
+            }
+        });
+    }
+
+    function addFarmer(){
+        $.ajax({
+            url: "{% url 'add_entry' %}",
+            type: "POST",
+            data: {
+
+            }
+        });
+    }
+
     function populateProvince(region){
         var url = "{% url 'province_filtered' 0 %}";
         $('#province').empty();

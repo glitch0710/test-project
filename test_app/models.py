@@ -92,8 +92,8 @@ class UsersAreaInfo(models.Model):
 
     farmer_id = models.ForeignKey(Farmer, models.CASCADE, db_column='farmer_id')
     total_area = models.FloatField()
-    crop_planted = models.CharField(max_length=9, choices=PLANTED, default=RICE)
-    remarks = models.CharField(max_length=100)
+    crop_planted = models.CharField(max_length=9, choices=PLANTED, default=RICE, blank=True, null=True)
+    remarks = models.CharField(max_length=100, blank=True, null=True)
     sketch_plan = models.FileField(upload_to='documents_sp/', max_length=254, blank=True)
     map = models.FileField(upload_to='documents_map/', max_length=254, blank=True)
     google_earth = models.FileField(upload_to='documents_ge/', max_length=254, blank=True)
@@ -117,6 +117,7 @@ class AreaCrop(models.Model):
         (SUGARCANE, 'Sugarcane'),
     ]
 
+    area_id = models.ForeignKey(UsersAreaInfo, models.CASCADE, db_column='area_id', default=None)
     crop_planted = models.CharField(max_length=9, choices=PLANTED, default=RICE)
     status = models.CharField(max_length=100, blank=True, null=True)
     remarks = models.CharField(max_length=100, blank=True, null=True)

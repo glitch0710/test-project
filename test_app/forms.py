@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput, Select, Textarea, NumberInput, FileInput
-from .models import Profile, UsersAreaInfo, Farmer, ProfileAttachments
+from .models import Profile, UsersAreaInfo, Farmer, ProfileAttachments, AreaCrop
 
 
 class ProfileForm(ModelForm):
@@ -57,8 +57,8 @@ class UserAreaTechnicalForm(ModelForm):
         fields = [
             'farmer_id',
             'total_area',
-            'crop_planted',
-            'remarks',
+            # 'crop_planted',
+            # 'remarks',
             'area_coordinates',
             'profile_field',
             'soil_ph',
@@ -71,18 +71,41 @@ class UserAreaTechnicalForm(ModelForm):
             'total_area': TextInput(attrs={
                 'class': "form-control"
             }),
-            'crop_planted': Select(attrs={
-                'class': "form-control"
-            }),
-            'remarks': Textarea(attrs={
-                'class': "form-control",
-                'rows': "3"
-            }),
+            # 'crop_planted': Select(attrs={
+            #     'class': "form-control"
+            # }),
+            # 'remarks': Textarea(attrs={
+            #     'class': "form-control",
+            #     'rows': "3"
+            # }),
             'profile_field': TextInput(attrs={
                 'class': "form-control",
             }),
             'soil_ph': NumberInput(attrs={
                 'class': "form-control",
+            }),
+        }
+
+
+class AreaCropForm(ModelForm):
+    class Meta:
+        model = AreaCrop
+        fields = [
+            'crop_planted',
+            'status',
+            'remarks',
+        ]
+
+        widgets = {
+            'crop_planted': Select(attrs={
+                'class': "form-control"
+            }),
+            'status': TextInput(attrs={
+                'class': "form-control",
+            }),
+            'remarks': Textarea(attrs={
+                'class': "form-control",
+                'rows': "3"
             }),
         }
 

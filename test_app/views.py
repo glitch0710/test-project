@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Profile, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode, Farmer
 from .forms import ProfileForm, UserAreaForm, FarmerForm, FarmerAttachmentsForm, \
-    UserAreaEngineerForm, UserAreaTechnicalForm
+    UserAreaEngineerForm, UserAreaTechnicalForm, AreaCropForm
 from django.db import IntegrityError
 from .tables import ProfileTable
 from django.http import HttpResponse, JsonResponse
@@ -180,18 +180,20 @@ def user_home(request):
 @login_required(login_url='/')
 def add_entry(request):
     if request.method == 'GET':
-        form = UserAreaForm()
+        form = UserAreaTechnicalForm()
+        form_crop = AreaCropForm()
         regions = RegionCode.objects.all()
 
         context = {
             'form': form,
+            'form_crop': form_crop,
             'regions': regions
         }
 
         return render(request, 'test_app/addentry.html', context)
     else:
         try:
-            entry_form = UserAreaForm(request.POST, request.FILES)
+            entry_form = UserAreaTechnicalForm(request.POST, request.FILES)
 
             if entry_form.is_valid():
                 save_entry = entry_form.save(commit=False)
@@ -205,6 +207,34 @@ def add_entry(request):
 
             messages.success(request, 'Entry saved successfully')
             return redirect('user_home')
+        except ValueError:
+            messages.error(request, 'Data entry encountered an error. Please try again.')
+            return redirect('add_entry')
+
+
+@login_required(login_url='/')
+def add_crop(request):
+    if request.method == 'POST':
+        try:
+           
+            form = AreaCropForm(request.POST)
+            if form.is_valid():
+                new_area = form.save(commit=False)
+                # crop_planted = request.POST['crop_planted']
+                # status = request.POST['status']
+                # remarks = request.POST['remarks']
+                area = form.cleaned_data['area']
+                new_area.area_id = area
+                new_area.save()
+
+            crops = AreaCrop.objects.filter(area_id=new_area.area_id)
+
+            context = {
+                'crops': crops
+            }
+
+            return JsonResponse(data=context, safe=False)
+
         except ValueError:
             messages.error(request, 'Data entry encountered an error. Please try again.')
             return redirect('add_entry')
