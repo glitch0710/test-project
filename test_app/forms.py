@@ -18,6 +18,7 @@ class ProfileForm(ModelForm):
             }),
         }
 
+
 class FarmerForm(ModelForm):
     class Meta:
         model = Farmer

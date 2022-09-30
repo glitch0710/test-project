@@ -1,0 +1,62 @@
+{% extends 'test_app/base.html' %}
+
+{% block content %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-11">
+            <h1>Add Crops</h1><br>
+
+            <form action="#">
+            {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <input type="hidden" id="area_id" name="area_id" value="{{ area_id }}"/>
+                        <label class="h6" for="id_crop_planted">Crop: </label><br>
+                        {{ form_crop.crop_planted }}<br>
+                        <label class="h6" for="id_status">Status: </label><br>
+                        {{ form_crop.status }}<br>
+                        <label class="h6" for="id_remarks">Remarks: </label><br>
+                        {{ form_crop.remarks }}<br>
+                        <button type="button" onclick="addCrop()" class="btn btn-success">Submit</button>
+                    </div>
+                </div>
+            </form>
+            <br><br><br>
+            <h5>Crops existing in area: </h5>
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul id="croplist"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block chart_js %}
+<script>
+    function addCrop(){
+        $.ajax({
+            url: "{% url 'add_crop' %}",
+            type: "POST",
+            data: {
+                "crop_planted": $("#id_crop_planted").val(),
+                "status": $("#id_status").val(),
+                "remarks": $("#id_remarks").val(),
+                "area": $("#area_id").val(),
+                "csrfmiddlewaretoken": "{{ csrf_token }}",
+            },
+            dataType: "json",
+            before: function () {
+
+            },
+            success: function (response) {
+                $("ul#croplist").prepend(response[0].crop_planted)
+                $("ul#croplist li:first").fadeIn("slow");
+                $("#flash").hide();
+            },
+            complete: function () {
+                $('#spinner-div').hide();
+            }
+        });
+    }
+</script>
+{% endblock %}

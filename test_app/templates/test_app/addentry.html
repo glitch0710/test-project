@@ -106,34 +106,6 @@
         </form>
     </div>
 </div>
-
-<form action="#">
-    {% csrf_token %}
-    <div class="modal fade bd-example-modal-lg" id="addCropModal" tabindex="-1" role="dialog" aria-labelledby="addCropModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addCropModalLongTitle">Add crop to area</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <label class="h6" for="id_crop_planted">Crop: </label><br>
-                    {{ form_crop.crop_planted }}<br>
-                    <label class="h6" for="id_status">Status: </label><br>
-                    {{ form_crop.status }}<br>
-                    <label class="h6" for="id_remarks">Remarks: </label><br>
-                    {{ form_crop.remarks }}<br>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="add_crop" class="btn btn-success" onclick="addCrop()">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
 {% endblock %}
 
 {% block chart_js %}
