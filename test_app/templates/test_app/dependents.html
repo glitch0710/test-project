@@ -1,0 +1,90 @@
+{% extends 'test_app/base.html' %}
+
+{% block css %}
+<style>
+    #spinner-div {
+        position: fixed;
+        display: none;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 2;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div id="spinner-div" class="pt-5">
+    <div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-10">
+        <h1>Add Farmer Dependents</h1><br>
+
+        <form action="#">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <input type="hidden" id="farmer_id" name="farmer_id" value="{{ farmer_id }}"/>
+                    <label class="h6" for="id_dependent_name">Name: </label><br>
+                    {{ form_dependent.dependent_name }}<br>
+                    <label class="h6" for="id_age">Age: </label><br>
+                    {{ form_dependent.age }}<br>
+                    <div class="d-flex justify-content-between">
+                        <button type="button" onclick="addDependent()" class="btn btn-warning">Add Dependent</button>
+                        <a type="button" class="btn btn-success" href="{% url 'user_info' %}">Done</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <br><br><br>
+        <h5>Dependents: </h5><hr>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul id="dependentlist"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block chart_js %}
+<script>
+    function addDependent(){
+        $("#dependentlist").empty()
+        $('#spinner-div').show();
+
+        $.ajax({
+            url: "{% url 'farmer_dependent' %}",
+            type: "POST",
+            data: {
+                "dependent_name": $("#id_dependent_name").val(),
+                "age": $("#id_age").val(),
+                "farmerid": $("#farmer_id").val(),
+                "csrfmiddlewaretoken": "{{ csrf_token }}",
+            },
+            dataType: "json",
+            success: function (response) {
+                var items = [];
+                $.each(response, function(i, item) {
+                    items.push('<li>' + item.dependent_name + '</li>')
+                });
+                
+                $("#dependentlist").append(items.join(''));
+                alert($("#id_dependent_name").val() + ' successfully added')
+                $("#id_dependent_name").val("")
+                $("#id_age").val("")
+            },
+            complete: function () {
+                $('#spinner-div').hide();
+            }
+        });
+    }
+</script>
+{% endblock %}

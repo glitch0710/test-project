@@ -1,12 +1,32 @@
 {% extends 'test_app/base.html' %}
 
+{% block css %}
+<style>
+    #spinner-div {
+        position: fixed;
+        display: none;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 2;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+    <div id="spinner-div" class="pt-5">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
     <div class="row justify-content-center mt-5">
         <div class="col-md-11">
             <h1>Add Crops</h1><br>
 
             <form action="#">
-            {% csrf_token %}
+                {% csrf_token %}
                 <div class="row">
                     <div class="col-sm-12 col-md-12">
                         <input type="hidden" id="area_id" name="area_id" value="{{ area_id }}"/>
@@ -16,12 +36,15 @@
                         {{ form_crop.status }}<br>
                         <label class="h6" for="id_remarks">Remarks: </label><br>
                         {{ form_crop.remarks }}<br>
-                        <button type="button" onclick="addCrop()" class="btn btn-success">Submit</button>
+                        <div class="d-flex justify-content-between">
+                            <button type="button" onclick="addCrop()" class="btn btn-warning">Add Crop</button>
+                            <a type="button" class="btn btn-success" href="{% url 'user_info' %}">Done</a>
+                        </div>
                     </div>
                 </div>
             </form>
             <br><br><br>
-            <h5>Crops existing in area: </h5>
+            <h5>Crops existing in area: </h5><hr>
             <div class="row">
                 <div class="col-sm-12">
                     <ul id="croplist"></ul>
@@ -34,6 +57,9 @@
 {% block chart_js %}
 <script>
     function addCrop(){
+        $("#croplist").empty()
+        $('#spinner-div').show();
+
         $.ajax({
             url: "{% url 'add_crop' %}",
             type: "POST",
@@ -45,13 +71,16 @@
                 "csrfmiddlewaretoken": "{{ csrf_token }}",
             },
             dataType: "json",
-            before: function () {
-
-            },
             success: function (response) {
-                $("ul#croplist").prepend(response[0].crop_planted)
-                $("ul#croplist li:first").fadeIn("slow");
-                $("#flash").hide();
+                var items = [];
+                $.each(response, function(i, item) {
+                    items.push('<li>' + item.crop_planted + '</li>')
+                });
+                
+                $("#croplist").append(items.join(''));
+                alert($("#id_crop_planted").val() + ' successfully added')
+                $("#id_status").val("")
+                $("#id_remarks").val("")
             },
             complete: function () {
                 $('#spinner-div').hide();

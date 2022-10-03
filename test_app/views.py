@@ -4,9 +4,9 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Profile, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode, Farmer, AreaCrop
+from .models import FarmerDependents, Profile, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode, Farmer, AreaCrop
 from .forms import ProfileForm, UserAreaForm, FarmerForm, FarmerAttachmentsForm, \
-    UserAreaEngineerForm, UserAreaTechnicalForm, AreaCropForm
+    UserAreaEngineerForm, UserAreaTechnicalForm, AreaCropForm, FarmerDependentsForm
 from django.db import IntegrityError
 from .tables import ProfileTable
 from django.http import HttpResponse, JsonResponse
@@ -126,14 +126,49 @@ def add_farmer(request):
                 attchmnts.farmer_id = farmer
                 attchmnts.save()
 
-                messages.success(request, 'Farmer profile saved successfully.')
-                return redirect('user_info')
+                form_dependent = FarmerDependentsForm()
+                context = {
+                    'farmer_id': data.id,
+                    'form_dependent': form_dependent
+                }
+
+                return render(request, 'test_app/dependents.html', context)
+
+                # messages.success(request, 'Farmer profile saved successfully.')
+                # return redirect('user_info')
             else:
                 messages.error(request, 'Form did not validate, please fill-up the form properly.')
                 return redirect('add_farmer')
         except ValueError:
             messages.error(request, 'Data entry encountered an error. Please try again.')
             return redirect('add_farmer')
+
+
+@login_required(login_url='/')
+def farmer_dependent(request):
+    if request.method == 'POST':
+        try:
+            
+            form = FarmerDependentsForm(request.POST)
+
+            if form.is_valid():
+                farmer_dependents = form.save(commit=False)
+
+                farmerid = request.POST['farmerid']
+                farmer_id = Farmer.objects.get(id=farmerid)
+                farmer_dependents.farmer = farmer_id
+
+                farmer_dependents.save()
+
+                dependents = list(FarmerDependents.objects.filter(farmer=farmer_id).values())
+            
+
+                return JsonResponse(data=dependents, safe=False)
+
+        except ValueError:
+            messages.error(request, 'Data entry encountered an error. Please try again.')
+            return redirect('add_farmer')
+
 
 
 @login_required(login_url='/')
@@ -219,7 +254,7 @@ def add_entry(request):
 def add_crop(request):
     if request.method == 'POST':
         try:
-           
+            
             form = AreaCropForm(request.POST)
 
             if form.is_valid():
@@ -232,10 +267,7 @@ def add_crop(request):
                 new_area.save()
 
                 crops = list(AreaCrop.objects.filter(area_id=area_id).values())
-                print(crops)
-                context = {
-                    'crops': crops
-                }
+            
 
                 return JsonResponse(data=crops, safe=False)
 
@@ -258,6 +290,7 @@ def view_area(request, pk):
         user_area = get_object_or_404(UsersAreaInfo, id=pk)
         form = UserAreaTechnicalForm(instance=user_area)
         user_group = request.user.groups.all()[0].id
+        crop_in_area = AreaCrop.objects.filter(area_id=pk)
 
         farm_location = str(get_brgy(user_area.brgy)) + ', ' \
                       + str(get_muncity(user_area.muncity)) + ', ' \
@@ -268,6 +301,7 @@ def view_area(request, pk):
             'farm_location': farm_location,
             'form': form,
             'user_group': user_group,
+            'crop_in_area': crop_in_area,
         }
 
         return render(request, 'test_app/viewarea.html', context)

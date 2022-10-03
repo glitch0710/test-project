@@ -1,5 +1,7 @@
+from dataclasses import field, fields
+from statistics import mode
 from django.forms import ModelForm, TextInput, Select, Textarea, NumberInput, FileInput
-from .models import Profile, UsersAreaInfo, Farmer, ProfileAttachments, AreaCrop
+from .models import Profile, UsersAreaInfo, Farmer, ProfileAttachments, AreaCrop, FarmerDependents
 
 
 class ProfileForm(ModelForm):
@@ -22,7 +24,22 @@ class ProfileForm(ModelForm):
 class FarmerForm(ModelForm):
     class Meta:
         model = Farmer
-        fields = ['first_name', 'last_name', 'middle_name','gender',]
+        fields = [
+            'first_name', 
+            'last_name', 
+            'middle_name',
+            'gender',
+            'contact_no',
+            'tin',
+            'philhealth',
+            'sss',
+            'pagibig',
+            'birthdate',
+            'civil_status',
+            'nationality',
+            'spouse',
+        ]
+
         widgets = {
             'first_name': TextInput(attrs={
                 'class': "form-control",
@@ -34,6 +51,34 @@ class FarmerForm(ModelForm):
                 'class': "form-control"
             }),
             'gender': Select(attrs={
+                'class': "form-control"
+            }),
+            'contact_no': TextInput(attrs={
+                'class': "form-control"
+            }),
+            'birthdate': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': "mm/dd/yyyy"
+            }),
+            'civil_status': Select(attrs={
+                'class': "form-control"
+            }),
+            'nationality': TextInput(attrs={
+                'class': "form-control"
+            }),
+            'tin': TextInput(attrs={
+                'class': "form-control"
+            }),
+            'philhealth': TextInput(attrs={
+                'class': "form-control"
+            }),
+            'sss': TextInput(attrs={
+                'class': "form-control"
+            }),
+            'pagibig': TextInput(attrs={
+                'class': "form-control"
+            }),
+            'spouse': TextInput(attrs={
                 'class': "form-control"
             }),
         }
@@ -50,6 +95,24 @@ class FarmerAttachmentsForm(ModelForm):
             'valid_id_one',
             'valid_id_two'
         ]
+
+
+class FarmerDependentsForm(ModelForm):
+    class Meta:
+        model = FarmerDependents
+        fields = [
+            'dependent_name',
+            'age',
+        ]
+
+        widgets = {
+            'dependent_name': TextInput(attrs={
+                'class': "form-control",
+            }),
+            'age': NumberInput(attrs={
+                'class': "form-control",
+            }),
+        }
 
 
 class UserAreaTechnicalForm(ModelForm):

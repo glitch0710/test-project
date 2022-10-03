@@ -1,3 +1,5 @@
+from email.policy import default
+from random import choices
 from django.db import models
 from django.conf import settings
 
@@ -34,6 +36,19 @@ class Farmer(models.Model):
         (MALE, 'Male'),
         (FEMALE, 'Female'),
     ]
+
+    MARRIED = 'MARRIED'
+    SINGLE = 'SINGLE'
+    DIVORCED = 'DIVORCED'
+    WIDOWED = 'WIDOWED'
+
+    PERSON_CIVIL_STATUS = [
+        (MARRIED, 'Married'),
+        (SINGLE, 'Single'),
+        (DIVORCED, 'Divorced'),
+        (WIDOWED, 'Widowed'),
+    ]
+
     assigned_id = models.CharField(max_length=20, blank=True, null=True)
     first_name = models.CharField(max_length=200, blank=False)
     last_name = models.CharField(max_length=200, blank=False)
@@ -44,16 +59,16 @@ class Farmer(models.Model):
     muncity = models.CharField(max_length=200)
     brgy = models.CharField(max_length=200)
     address = models.TextField(blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
     contact_no = models.CharField(max_length=20, blank=True, null=True)
     tin = models.CharField(max_length=20, blank=True, null=True)
     philhealth = models.CharField(max_length=20, blank=True, null=True)
     sss = models.CharField(max_length=20, blank=True, null=True)
     pagibig = models.CharField(max_length=20, blank=True, null=True)
-    civil_status = models.CharField(max_length=20, blank=True, null=True)
+    civil_status = models.CharField(max_length=20, blank=True, null=True, choices=PERSON_CIVIL_STATUS, default=SINGLE)
     nationality = models.CharField(max_length=50, blank=True, null=True)
     birthdate = models.DateField(default=None)
     spouse = models.CharField(max_length=250, blank=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.first_name
@@ -65,7 +80,7 @@ class FarmerDependents(models.Model):
     age = models.IntegerField()
 
     def __str__(self):
-        return self.farmer
+        return self.dependent_name
 
 
 # Farmers
