@@ -544,6 +544,7 @@ def view_user(request, pk):
 def view_area_admin(request, pk):
     if request.method == 'GET':
         user_area = get_object_or_404(UsersAreaInfo, id=pk)
+        crop_in_area = AreaCrop.objects.filter(area_id=pk)
 
         farm_location = str(get_brgy(user_area.brgy)) + ', ' \
                         + str(get_muncity(user_area.muncity)) + ', ' \
@@ -552,6 +553,7 @@ def view_area_admin(request, pk):
         context = {
             'user_area': user_area,
             'farm_location': farm_location,
+            'crop_in_area': crop_in_area,
         }
 
         return render(request, 'test_app/viewarea.html', context)
@@ -563,6 +565,7 @@ def view_area_admin(request, pk):
 def engineer_view_area(request, pk):
     if request.method == 'GET':
         user_area = get_object_or_404(UsersAreaInfo, id=pk)
+        crop_in_area = AreaCrop.objects.filter(area_id=pk)
         form = UserAreaEngineerForm(instance=user_area)
 
         farm_location = str(get_brgy(user_area.brgy)) + ', ' \
@@ -572,6 +575,7 @@ def engineer_view_area(request, pk):
         context = {
             'user_area': user_area,
             'farm_location': farm_location,
+            'crop_in_area': crop_in_area,
             'form': form,
         }
 

@@ -31,34 +31,59 @@
                 </button>
             </div>
         </div>
-        <br><br><h4>Attachments</h4><hr>
-        <label class="h6">Sketch Plan: </label>
-        {% if user_area.sketch_plan %}
-            <a class="h6 btn-outline-success" href="/media/{{ user_area.sketch_plan }}" target="_blank">Click here to view or download</a><br>
-        {% else %}
-            <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
-        {% endif %}
+        <br><br>
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <h4>Crops in Area</h4><hr>
+                <ul class="list_group">
+                    {% if not crop_in_area %}
+                        <p class="mb-1 text-danger"><strong>No crop(s) found in area</strong></p>
+                    {% else %}
+                        {% for crop in crop_in_area %}
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ crop.crop_planted }}</h5>
+                                        <small class="text-success"><strong>{{ crop.status }}</strong></small>
+                                    </div>
+                                    <p class="mb-1">{{ crop.remarks }}</p>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <h4>Attachments</h4><hr>
+                <label class="h6">Sketch Plan: </label>
+                {% if user_area.sketch_plan %}
+                    <a class="h6 btn-outline-success" href="/media/{{ user_area.sketch_plan }}" target="_blank">Click here to view or download</a><br>
+                {% else %}
+                    <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
+                {% endif %}
 
-        <label class="h6">Map: </label>
-        {% if user_area.map %}
-            <a class="h6 btn-outline-success" href="/media/{{ user_area.map }}" target="_blank">Click here to view or download</a><br>
-        {% else %}
-            <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
-        {% endif %}
+                <label class="h6">Map: </label>
+                {% if user_area.map %}
+                    <a class="h6 btn-outline-success" href="/media/{{ user_area.map }}" target="_blank">Click here to view or download</a><br>
+                {% else %}
+                    <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
+                {% endif %}
 
-        <label class="h6">Google Earth: </label>
-        {% if user_area.google_earth %}
-            <a class="h6 btn-outline-success" href="/media/{{ user_area.google_earth }}" target="_blank">Click here to view or download</a><br>
-        {% else %}
-            <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
-        {% endif %}
+                <label class="h6">Google Earth: </label>
+                {% if user_area.google_earth %}
+                    <a class="h6 btn-outline-success" href="/media/{{ user_area.google_earth }}" target="_blank">Click here to view or download</a><br>
+                {% else %}
+                    <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
+                {% endif %}
 
-        <label class="h6">Area Coordinates: </label>
-        {% if user_area.area_coordinates %}
-            <a class="h6 btn-outline-success" href="/media/{{ user_area.area_coordinates }}" target="_blank">Click here to view or download</a><br>
-        {% else %}
-            <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
-        {% endif %}
+                <label class="h6">Area Coordinates: </label>
+                {% if user_area.area_coordinates %}
+                    <a class="h6 btn-outline-success" href="/media/{{ user_area.area_coordinates }}" target="_blank">Click here to view or download</a><br>
+                {% else %}
+                    <a class="h6 btn-outline-danger" href="#">No attached file</a><br>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 <form action="" method="POST" enctype="multipart/form-data">
