@@ -1,0 +1,58 @@
+{% extends 'test_app/base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-12">
+        <h1>Dashboard</h1>
+        <br>
+        <table class="table table hover table-stripped table-responsive-md">
+            <thead class="table-success">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Contact No.</th>
+                    <th scope="col">Family Name</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Middle Name</th>
+                    <th scope="col">Productive Area (HA)</th>
+                    <th scope="col">Main Crop</th>
+                    <th scope="col">Soil Ph</th>
+                    <th scope="col">Sketch Plan</th>
+                    <th scope="col">Google Earth</th>
+                    <th scope="col" align="center">Application</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for farmer in farmer_records %}
+                    <tr>
+                        <td scope="row">{{ farmer.area_id.farmer_id.id }}</td>
+                        <td>{{ farmer.area_id.farmer_id.contact_no }}</td>
+                        <td>{{ farmer.area_id.farmer_id.last_name }}</td>
+                        <td>{{ farmer.area_id.farmer_id.first_name }}</td>
+                        <td>{{ farmer.area_id.farmer_id.middle_name }}</td>
+                        <td>{{ farmer.area_id.total_area }}</td>
+                        <td>{{ farmer.crop_planted }}</td>
+                        <td>{{ farmer.area_id.soil_ph }}</td>
+                        <td>
+                            {% if farmer.area_id.sketch_plan %}
+                                <a type="button" class="btn btn-outline-link btn-sm text-primary" href="/media/{{ farmer.area_id.sketch_plan }}" target="_blank">View Sketch Plan</a>
+                            {% else %}
+                                <p class="text-danger"><strong>No file uploaded</strong></p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if farmer.area_id.google_earth %}
+                                <a type="button" class="btn btn-outline-link btn-sm text-primary" href="/media/{{ farmer.area_id.google_earth }}" target="_blank">View Google Earth</a>
+                            {% else %}
+                            <p class="text-danger"><strong>No file uploaded</strong></p>
+                            {% endif %}
+                        </td>
+                        <td><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="#">View</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div
+
+{% endblock content %}

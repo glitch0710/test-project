@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -320,6 +321,20 @@ def view_area(request, pk):
         except ValueError:
             messages.error(request, 'Update entry encountered an error. Please try again.')
             return redirect('view_area', user_area.id)
+
+
+@login_required(login_url='/')
+def view_all(request):
+    if request.method == 'GET':
+        records = AreaCrop.objects.all()
+
+        context = {
+            'farmer_records': records,
+        }
+
+        return render(request, 'test_app/dashboard_viewall.html', context)
+    else:
+        pass
 
 
 @login_required(login_url='/')

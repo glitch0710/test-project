@@ -23,6 +23,7 @@ urlpatterns = [
     path('dashboard/viewuserarea/<int:pk>/', views.view_area_admin, name='view_area_admin'),
     path('dashboard/area', views.viewarea_dashboard, name='viewarea_dashboard'),
     path('dashboard/users', views.user_list, name='user_list'),
+    path('dashboard/view', views.view_all, name='view_all'),
 
     # Engineer
     path('home/', views.user_engineer, name='user_engineer'),
