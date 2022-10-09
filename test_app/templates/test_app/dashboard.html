@@ -107,7 +107,10 @@
                         <td>{{ data.last_name }}</td>
                         <td>{{ data.gender }}</td>
                         <td>{{ data.address }}</td>
-                        <td><a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_user' data.id %}">View</a>
+                        <td>
+                            <a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_user' data.id %}">View</a>
+                            <a type="button" class="btn btn-outline-primary btn-sm text-primary" href="{% url 'view_farmer' data.id %}">Profile</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

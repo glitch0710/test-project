@@ -24,6 +24,7 @@ urlpatterns = [
     path('dashboard/area', views.viewarea_dashboard, name='viewarea_dashboard'),
     path('dashboard/users', views.user_list, name='user_list'),
     path('dashboard/view', views.view_all, name='view_all'),
+    path('dashboard/farmer/<int:pk>', views.view_farmer, name='view_farmer'),
 
     # Engineer
     path('home/', views.user_engineer, name='user_engineer'),

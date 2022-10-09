@@ -401,6 +401,41 @@ def user_dashboard(request):
 
 
 @login_required(login_url='/')
+def view_farmer(request, pk):
+    if request.method == 'GET':
+        farmer_details = get_object_or_404(Farmer, id=pk)
+        farmer_dependents = FarmerDependents.objects.filter(farmer=pk)
+        areas = UsersAreaInfo.objects.filter(farmer_id=pk).values('total_area')
+        farmer_address = str(get_brgy(farmer_details.brgy)) + ', ' \
+                      + str(get_muncity(farmer_details.muncity)) + ', ' \
+                      + str(get_province(farmer_details.province))
+
+        p_area = []
+
+        if not areas:
+            productive_area = 0
+        else:
+            p_area.clear
+            for area in areas:
+                p_area.append(area['total_area'])
+
+            np_area = np.array([p_area])
+            productive_area = np.sum(np_area)
+
+        context = {
+            'farmer': farmer_details,
+            'address': farmer_address,
+            'dependents': farmer_dependents,
+            'productive_area': productive_area,
+            'areas': areas,
+        }
+
+        return render(request, 'test_app/viewfarmer.html', context)
+    else:
+        pass
+
+
+@login_required(login_url='/')
 def viewarea_dashboard(request):
     if request.method == 'GET':
         data_entries = UsersAreaInfo.objects.all()
