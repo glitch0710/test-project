@@ -1,11 +1,10 @@
 {% extends 'test_app/base.html' %}
 
 {% block content %}
-
+{% load static %}
 <div class="row justify-content-center mt-5">
     <div class="col-md-10">
         <h1>Farmer Details</h1><hr>
-
         <div class="row">
             <div class="col-sm-6 col-lg-6">
                 <div class="card border-warning mb-3">
@@ -78,9 +77,60 @@
                     <p class="card-text text-danger" style="font-size: 15px;"><strong>No Dependents</strong></p>
                 {% endif %}
             </div>
-            <hr><br><br><br>
-            <a href="{% url 'user_dashboard' %}" class="btn btn-warning">Back to Dashboard</a>
+        </div><br><br>
+        <h5>Attachments</h5><hr>
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{{ farmer_attachments.id_picture.url }}" alt="ID Picture">
+                    <div class="card-body">
+                        <p class="card-text">ID Picture</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{{ farmer_attachments.cedula.url }}" alt="Cedula">
+                    <div class="card-body">
+                        <p class="card-text">Cedula</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{{ farmer_attachments.brgy_clearance.url }}" alt="Barangay Clearance">
+                    <div class="card-body">
+                        <p class="card-text">Barangay Clearance</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{{ farmer_attachments.tax_dec.url }}" alt="Tax Declaration">
+                    <div class="card-body">
+                        <p class="card-text">Tax Declaration</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{{ farmer_attachments.valid_id_one.url }}" alt="Valid ID">
+                    <div class="card-body">
+                        <p class="card-text">Valid ID</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{{ farmer_attachments.valid_id_two.url }}" alt="Valid ID">
+                    <div class="card-body">
+                        <p class="card-text">Valid ID</p>
+                    </div>
+                </div>
+            </div>
         </div>
+        <br><br><br>
+        <a href="{% url 'user_dashboard' %}" class="btn btn-warning">Back to Dashboard</a>
     </div>
 </div>
 <br><br><br>

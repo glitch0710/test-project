@@ -5,7 +5,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import FarmerDependents, Profile, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode, Farmer, AreaCrop
+from .models import FarmerDependents, Profile, ProfileAttachments, UsersAreaInfo, RegionCode, ProvincialCode, MunCityCode, BrgyCode, Farmer, AreaCrop
 from .forms import ProfileForm, UserAreaForm, FarmerForm, FarmerAttachmentsForm, \
     UserAreaEngineerForm, UserAreaTechnicalForm, AreaCropForm, FarmerDependentsForm
 from django.db import IntegrityError
@@ -406,6 +406,7 @@ def view_farmer(request, pk):
         farmer_details = get_object_or_404(Farmer, id=pk)
         farmer_dependents = FarmerDependents.objects.filter(farmer=pk)
         areas = UsersAreaInfo.objects.filter(farmer_id=pk).values('total_area')
+        farmer_attachments = get_object_or_404(ProfileAttachments, farmer_id=pk)
         farmer_address = str(get_brgy(farmer_details.brgy)) + ', ' \
                       + str(get_muncity(farmer_details.muncity)) + ', ' \
                       + str(get_province(farmer_details.province))
@@ -428,6 +429,7 @@ def view_farmer(request, pk):
             'dependents': farmer_dependents,
             'productive_area': productive_area,
             'areas': areas,
+            'farmer_attachments': farmer_attachments,
         }
 
         return render(request, 'test_app/viewfarmer.html', context)
