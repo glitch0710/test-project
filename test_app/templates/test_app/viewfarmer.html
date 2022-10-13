@@ -5,6 +5,7 @@
 <div class="row justify-content-center mt-5">
     <div class="col-md-10">
         <h1>Farmer Details</h1><hr>
+        {% include 'test_app/messages.html' %}
         <div class="row">
             <div class="col-sm-6 col-lg-6">
                 <div class="card border-warning mb-3">
@@ -80,60 +81,94 @@
         </div><br><br>
         <h5>Attachments</h5><hr>
         <div class="row">
-            <div class="col-sm-12 col-md-4">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="{{ farmer_attachments.id_picture.url }}" alt="ID Picture">
-                    <div class="card-body">
-                        <p class="card-text">ID Picture</p>
+            {% if farmer_attachments != '' %}
+                <div class="col-sm-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="{{ farmer_attachments.id_picture.url }}" alt="ID Picture">
+                        <div class="card-body">
+                            <p class="card-text">ID Picture</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-4">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="{{ farmer_attachments.cedula.url }}" alt="Cedula">
-                    <div class="card-body">
-                        <p class="card-text">Cedula</p>
+                <div class="col-sm-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="{{ farmer_attachments.cedula.url }}" alt="Cedula">
+                        <div class="card-body">
+                            <p class="card-text">Cedula</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-4">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="{{ farmer_attachments.brgy_clearance.url }}" alt="Barangay Clearance">
-                    <div class="card-body">
-                        <p class="card-text">Barangay Clearance</p>
+                <div class="col-sm-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="{{ farmer_attachments.brgy_clearance.url }}" alt="Barangay Clearance">
+                        <div class="card-body">
+                            <p class="card-text">Barangay Clearance</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-4">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="{{ farmer_attachments.tax_dec.url }}" alt="Tax Declaration">
-                    <div class="card-body">
-                        <p class="card-text">Tax Declaration</p>
+                <div class="col-sm-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="{{ farmer_attachments.tax_dec.url }}" alt="Tax Declaration">
+                        <div class="card-body">
+                            <p class="card-text">Tax Declaration</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-4">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="{{ farmer_attachments.valid_id_one.url }}" alt="Valid ID">
-                    <div class="card-body">
-                        <p class="card-text">Valid ID</p>
+                <div class="col-sm-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="{{ farmer_attachments.valid_id_one.url }}" alt="Valid ID">
+                        <div class="card-body">
+                            <p class="card-text">Valid ID</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-4">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="{{ farmer_attachments.valid_id_two.url }}" alt="Valid ID">
-                    <div class="card-body">
-                        <p class="card-text">Valid ID</p>
+                <div class="col-sm-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="{{ farmer_attachments.valid_id_two.url }}" alt="Valid ID">
+                        <div class="card-body">
+                            <p class="card-text">Valid ID</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% else %}
+                <div class="col-sm-12 col-md-12">
+                    <p class="card-text text-danger" style="font-size: 15px;"><strong>No attachments found</strong></p>
+                </div>
+            {% endif %}
         </div>
         <br><br><br>
         <a href="{% url 'user_dashboard' %}" class="btn btn-warning">Back to Dashboard</a>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#updateFarmerModal" data-backdrop="static" data-keyboard="false">
+            Update Farmer
+        </button>
     </div>
 </div>
 <br><br><br>
+
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade bd-example-modal-lg" id="updateFarmerModal" tabindex="-1" role="dialog" aria-labelledby="updateFarmerModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLongTitle">Farmer Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ farmer_form.as_p }}
+                    <hr>
+                    {{ attachments_form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 {% endblock content %}
 

@@ -403,38 +403,86 @@ def user_dashboard(request):
 @login_required(login_url='/')
 def view_farmer(request, pk):
     if request.method == 'GET':
-        farmer_details = get_object_or_404(Farmer, id=pk)
-        farmer_dependents = FarmerDependents.objects.filter(farmer=pk)
-        areas = UsersAreaInfo.objects.filter(farmer_id=pk).values('total_area')
-        farmer_attachments = get_object_or_404(ProfileAttachments, farmer_id=pk)
-        farmer_address = str(get_brgy(farmer_details.brgy)) + ', ' \
-                      + str(get_muncity(farmer_details.muncity)) + ', ' \
-                      + str(get_province(farmer_details.province))
+        try:
+            farmer_details = get_object_or_404(Farmer, id=pk)
+            farmer_dependents = FarmerDependents.objects.filter(farmer=pk)
+            areas = UsersAreaInfo.objects.filter(farmer_id=pk).values('total_area')
 
-        p_area = []
+            try:
+                farmer_attachments = ProfileAttachments.objects.get(farmer_id=pk)
+            except ProfileAttachments.DoesNotExist:
+                farmer_attachments = ''
 
-        if not areas:
-            productive_area = 0
-        else:
-            p_area.clear
-            for area in areas:
-                p_area.append(area['total_area'])
+            farmer_id = Farmer.objects.get(id=pk)
+            farmer_form = FarmerForm(instance=farmer_id)
+            farmer_att_form = None
+            if farmer_attachments != '':
+                farmer_att_form = FarmerAttachmentsForm(instance=farmer_attachments)
+            else:
+                farmer_att_form = FarmerAttachmentsForm()
+            
+            farmer_address = str(get_brgy(farmer_details.brgy)) + ', ' \
+                            + str(get_muncity(farmer_details.muncity)) + ', ' \
+                            + str(get_province(farmer_details.province))
 
-            np_area = np.array([p_area])
-            productive_area = np.sum(np_area)
+            p_area = []
 
-        context = {
-            'farmer': farmer_details,
-            'address': farmer_address,
-            'dependents': farmer_dependents,
-            'productive_area': productive_area,
-            'areas': areas,
-            'farmer_attachments': farmer_attachments,
-        }
+            if not areas:
+                productive_area = 0
+            else:
+                p_area.clear
+                for area in areas:
+                    p_area.append(area['total_area'])
 
-        return render(request, 'test_app/viewfarmer.html', context)
+                np_area = np.array([p_area])
+                productive_area = np.sum(np_area)
+
+            context = {
+                'farmer': farmer_details,
+                'address': farmer_address,
+                'dependents': farmer_dependents,
+                'productive_area': productive_area,
+                'areas': areas,
+                'farmer_attachments': farmer_attachments,
+                'farmer_form': farmer_form,
+                'attachments_form': farmer_att_form,
+            }
+
+            return render(request, 'test_app/viewfarmer.html', context)
+        except:
+            messages.error(request, 'Something went wrong, please try again.')
+            return redirect('user_dashboard')
     else:
-        pass
+        try:
+            farmer_id = Farmer.objects.get(id=pk)
+            farmer_form = FarmerForm(instance=farmer_id)
+            farmer_att_form = None
+
+            try:
+                farmer_att = ProfileAttachments.objects.get(farmer_id=pk)
+            except ProfileAttachments.DoesNotExist:
+                farmer_att = None
+
+            if farmer_att:
+                farmer_att_form = FarmerAttachmentsForm(request.POST, request.FILES, instance=farmer_att)
+            else:
+                farmer_att_form = FarmerAttachmentsForm(request.POST, request.FILES)
+
+            if farmer_form.is_valid():
+                farmer_form.save()
+
+                if farmer_att_form.is_valid():
+                    farmer_att_form.save()
+                else:
+                    raise ValueError
+            else:
+                raise ValueError
+
+            messages.success(request, 'Changes has been saved')
+            return redirect('view_farmer', pk)
+        except ValueError:
+            messages.error(request, 'Form did not validate. Please try again.')
+            return redirect('view_farmer', pk)
 
 
 @login_required(login_url='/')
