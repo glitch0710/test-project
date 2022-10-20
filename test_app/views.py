@@ -13,6 +13,7 @@ from .tables import ProfileTable
 from django.http import HttpResponse, JsonResponse
 import numpy as np
 import json
+from django.conf import settings
 
 
 def login_user(request):
@@ -345,6 +346,7 @@ def user_dashboard(request):
         else:
             data_entries = Farmer.objects.all()
             regions = RegionCode.objects.all()
+            brgy = BrgyCode.objects.filter(muncity_code=settings.DEFAULT_MUNICIPALITY)
 
             raw_income = Profile.objects.all()
             list_income = []
@@ -363,6 +365,7 @@ def user_dashboard(request):
                 'data_entries': data_entries,
                 'income': mean_income,
                 'regions': regions,
+                'brgy': brgy
             }
 
             return render(request, 'test_app/dashboard.html', context)

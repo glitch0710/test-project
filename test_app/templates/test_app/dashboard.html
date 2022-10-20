@@ -60,9 +60,9 @@
                 <input type="text" class="form-control" aria-label="Search" aria-describedby="inputGroup-sizing-default" id="search" name="search">
                 <button type="submit" class="btn btn-success">Submit</button>
             </div>
-            Filters: <br>
+            Filter Barangay: <br>
             <div class="row">
-                <div class="col-sm-12 col-md-6 col-lg-3">
+                {% comment %} <div class="col-sm-12 col-md-6 col-lg-3">
                     <select class="form-select form-control" name="region" id="region" onchange="populateProvince(this)" aria-label="Select Region">
                         <option value="0" selected>Select a Region</option>
                         {% for region in regions %}
@@ -79,10 +79,13 @@
                     <select class="form-select form-control" name="muncity" id="muncity" onchange="populateBrgy(this)" aria-label="Select City/Municipality">
                         <option value="0" selected>Select City/Municipality</option>
                     </select>
-                </div>
-                <div class="col-sm-12 col-md-6 col-lg-3">
+                </div> {% endcomment %}
+                <div class="col-sm-12 col-md-12 col-lg-12">
                     <select class="form-select form-control" name="brgy" id="brgy" aria-label="Select Barangay">
                         <option value="0" selected>Select Barangay</option>
+                        {% for barangay in brgy %}
+                            <option value="{{ barangay.brgy_psgc_code }}">{{ barangay.brgy_name }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
